@@ -114,7 +114,7 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie die Thermostat-Temperatur aus:"
+          "caption": "Bitte wählen Sie die Variable des Heizkörperthermostats für die Thermostat-Temperatur aus:"
         },
         {
           "type": "SelectVariable",
@@ -123,7 +123,7 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie den Boost-Modus aus:"
+          "caption": "\nBitte wählen Sie die Variable des Heizkörperthermostats für den Boost-Modus aus:"
         },
         {
           "type": "SelectVariable",
@@ -132,7 +132,7 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Raum-Temperatur aus:"
+          "caption": "\nBitte wählen Sie die Variable für die Raum-Temperatur aus:"
         },
         {
           "type": "SelectVariable",
@@ -257,7 +257,7 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie die Tür- / Fenstersensoren aus, die überwacht werden sollen:"
+          "caption": "Bitte wählen Sie die Variablen der Tür- / Fenstersensoren aus, die überwacht werden sollen:"
         },
         {
           "type": "List",

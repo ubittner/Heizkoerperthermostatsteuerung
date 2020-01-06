@@ -8,7 +8,7 @@
  * @file        module.php
  *
  * @author      Ulrich Bittner
- * @copyright   (c) 2019
+ * @copyright   (c) 2019, 2020
  * @license    	CC BY-NC-SA 4.0
  *              https://creativecommons.org/licenses/by-nc-sa/4.0/
  *
