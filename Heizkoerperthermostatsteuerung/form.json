@@ -14,7 +14,7 @@
         },
         {
           "type": "Label",
-          "caption": "Mit dieser Instanz können HomeMatic und Homematic IP Heizkörper-Thermostate HM-CC-RT-DN, HmIP-eTRV und HmIP-eTRV-2 gesteuert werden.\nWeitere Informationen entnehmen Sie bitte der Dokumentation.\n"
+          "caption": "Mit dieser Instanz können HomeMatic (HM-CC-RT-DN) und Homematic IP (HmIP-eTRV und HmIP-eTRV-2) Heizkörper-Thermostate gesteuert werden.\nWeitere Informationen entnehmen Sie bitte der Dokumentation.\n"
         },
         {
           "type": "Label",
