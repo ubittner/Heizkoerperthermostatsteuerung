@@ -14,7 +14,7 @@
         },
         {
           "type": "Label",
-          "caption": "Mit dieser Instanz können primär die HomeMatic / Homematic IP Heizkörper-Thermostate HM-CC-RT-DN, HmIP-eTRV und HmIP-eTRV-2 gesteuert werden.\nWeitere Informationen entnehmen Sie bitte der Dokumentation.\n"
+          "caption": "Mit dieser Instanz können HomeMatic und Homematic IP Heizkörper-Thermostate HM-CC-RT-DN, HmIP-eTRV und HmIP-eTRV-2 gesteuert werden.\nWeitere Informationen entnehmen Sie bitte der Dokumentation.\n"
         },
         {
           "type": "Label",
@@ -90,6 +90,16 @@
           "caption": "Raum-Temperatur"
         },
         {
+          "type": "CheckBox",
+          "name": "EnableValveState",
+          "caption": "Ventilstatus"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableBatteryState",
+          "caption": "Batteriestatus"
+        },
+        {
           "type": "Label",
           "caption": " "
         },
@@ -114,7 +124,16 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie die Variable des Heizkörperthermostats für die Thermostat-Temperatur aus:"
+          "caption": "Bitte wählen Sie die Instanz des Heizkörperthermostats aus:"
+        },
+        {
+          "type": "SelectInstance",
+          "name": "ThermostatInstance",
+          "caption": "Heizkörperthermostat"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte wählen Sie die Variable für die Thermostat-Temperatur aus:"
         },
         {
           "type": "SelectVariable",
@@ -123,7 +142,7 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Variable des Heizkörperthermostats für den Boost-Modus aus:"
+          "caption": "\nBitte wählen Sie die Variable für den Boost-Modus aus:"
         },
         {
           "type": "SelectVariable",
@@ -141,6 +160,24 @@
         },
         {
           "type": "Label",
+          "caption": "\nBitte wählen Sie die Variable für den Ventilstatus aus:"
+        },
+        {
+          "type": "SelectVariable",
+          "name": "ValveState",
+          "caption": "Ventilstatus"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte wählen Sie die Variable für den Batteriestatus aus:"
+        },
+        {
+          "type": "SelectVariable",
+          "name": "BatteryState",
+          "caption": "Batteriezustand"
+        },
+        {
+          "type": "Label",
           "caption": " "
         },
         {
@@ -151,15 +188,23 @@
             "items": [
               {
                 "type": "Label",
-                "caption": "Thermostat-Temperatur:\n\nHomeMatic:\t\t\tKanal 4, Variable 'SET_TEMPERATURE'\nHomematic IP:\t\tKanal 1, Variable 'SET_POINT_TEMPERATURE'"
+                "caption": "Thermostat-Temperatur:\nHomeMatic\t\t\t\t\tKanal 4\t\tVariable SET_TEMPERATURE\nHomematic IP\t\t\t\tKanal 1\t\tVariable SET_POINT_TEMPERATURE"
               },
               {
                 "type": "Label",
-                "caption": "\nBoost-Modus:\n\nHomeMatic:\t\t\tKanal 4, Variable 'BOOST_MODE'\nHomematic IP:\t\tKanal 1, Variable 'BOOST_MODE'"
+                "caption": "Boost-Modus:\nHomeMatic\t\t\t\t\tKanal 4\t\tVariable BOOST_MODE\nHomematic IP\t\t\t\tKanal 1\t\tVariable BOOST_MODE"
               },
               {
                 "type": "Label",
-                "caption": "\nRaum-Temperatur:\n\nHomeMatic:\t\t\tKanal 4, Variable 'ACTUAL_TEMPERATURE'\nHomematic IP:\t\tKanal 1, Variable 'ACTUAL_TEMPERATURE'"
+                "caption": "Raum-Temperatur:\nHomeMatic\t\t\t\t\tKanal 4\t\tVariable ACTUAL_TEMPERATURE\nHomematic IP\t\t\t\tKanal 1\t\tVariable ACTUAL_TEMPERATURE"
+              },
+              {
+                "type": "Label",
+                "caption": "Ventilstatus:\nHomeMatic\t\t\t\t\tKanal 4\t\tVariable ist nicht vorhanden!\nHomematic IP\t\t\t\tKanal 1\t\tVariable LEVEL"
+              },
+              {
+                "type": "Label",
+                "caption": "Batteriestatus:\nHomeMatic\t\t\t\t\tKanal 4\t\tVariable LOWBAT\nHomematic IP\t\t\t\tKanal 1\t\tVariable LOW_BAT"
               }
             ]
           }
@@ -220,6 +265,15 @@
         },
         {
           "type": "Label",
+          "caption": "\nBitte wählen Sie aus, ob bei der Aktivierung der Automatik die Temperatur direkt angepasst werden soll:"
+        },
+        {
+          "type": "CheckBox",
+          "name": "AdjustTemperature",
+          "caption": "Temperatur anpassen"
+        },
+        {
+          "type": "Label",
           "caption": "\nBitte geben Sie die Aktionsverzögerung in Sekunden an (0 = aus):"
         },
         {
@@ -257,12 +311,21 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie die Variablen der Tür- / Fenstersensoren aus, die überwacht werden sollen:"
+          "caption": "Bitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus eine Temperaturabsenkung vorgenommen werden soll:"
+        },
+        {
+          "type": "CheckBox",
+          "name": "ReduceTemperature",
+          "caption": "Temperaturabsenkung vornehmen"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte wählen Sie die Variablen der Tür- und Fenstersensoren aus:"
         },
         {
           "type": "List",
           "name": "DoorWindowSensors",
-          "caption": "Tür- / Fenstersensoren",
+          "caption": "Tür- und Fenstersensoren",
           "rowCount": 5,
           "add": true,
           "delete": true,

@@ -10,12 +10,12 @@ trait HKTS_weeklySchedule
      *
      * @param bool $State
      * false    = off
-     *
      * true     = on
      */
     public function ToggleAutomaticMode(bool $State): void
     {
         $this->SetValue('AutomaticMode', $State);
+        $this->AdjustTemperature();
     }
 
     /**
@@ -25,7 +25,7 @@ trait HKTS_weeklySchedule
     {
         $validate = $this->ValidateEventPlan();
         if (!$validate) {
-            echo 'Wochenplan ist nicht vorhanden oder ist inaktiv!';
+            echo 'Ein Wochenplan ist nicht vorhanden oder der Wochenplan ist inaktiv!';
             return;
         }
         $actionID = $this->GetActualAction();

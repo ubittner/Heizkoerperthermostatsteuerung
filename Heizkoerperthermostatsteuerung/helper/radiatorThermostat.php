@@ -25,34 +25,21 @@ trait HKTS_radiatorThermostat
      */
     public function ToggleBoostMode(bool $State): void
     {
-        if (!$this->ValidatePropertyVariable('BoostMode')) {
+        if (!$this->ValidatePropertyVariable('ThermostatInstance')) {
             return;
         }
         if ($this->GetValue('DoorWindowState')) {
             $State = false;
         }
         $this->SetValue('BoostMode', $State);
-        $id = $this->ReadPropertyInteger('BoostMode');
-        $execute = IPS_RunScriptText('@RequestAction(' . $id . ', ' . (int) $State . ');');
+        $id = $this->ReadPropertyInteger('ThermostatInstance');
+        $execute = @HM_WriteValueBoolean($id, 'BOOST_MODE', $State);
         if (!$execute) {
             $this->LogMessage(__FUNCTION__ . ' Boost-Modus konnte nicht ausgeführt werden.', KL_ERROR);
             $this->SendDebug(__FUNCTION__, 'Boost-Modus konnte nicht ausgeführt werden.', 0);
         } else {
             $this->SendDebug(__FUNCTION__, 'Boost-Modus wurde ausgeführt.', 0);
         }
-    }
-
-    /**
-     * Set the value for the variable.
-     *
-     * @param string $Name
-     */
-    public function SetVariableValue(string $Name): void
-    {
-        if (!$this->ValidatePropertyVariable($Name)) {
-            return;
-        }
-        $this->SetValue($Name, GetValue($this->ReadPropertyInteger($Name)));
     }
 
     /**
@@ -71,7 +58,7 @@ trait HKTS_radiatorThermostat
         }
         // Set thermostat temperature
         $id = $this->ReadPropertyInteger('ThermostatTemperature');
-        $setTemperature = IPS_RunScriptText('@RequestAction(' . $id . ', ' . (float) $Temperature . ');');
+        $setTemperature = @RequestAction($id, $Temperature);
         if (!$setTemperature) {
             $this->LogMessage(__FUNCTION__ . ' Temperatur von ' . $Temperature . ' konnte nicht eingestellt werden.', KL_ERROR);
             $this->SendDebug(__FUNCTION__, 'Temperatur von ' . $Temperature . ' konnte nicht eingestellt werden.', 0);
@@ -80,5 +67,21 @@ trait HKTS_radiatorThermostat
         }
         // Leave semaphore
         IPS_SemaphoreLeave($this->InstanceID . '.SetThermostatTemperature');
+    }
+
+    //#################### Private
+
+    /**
+     * Adjusts the temperature.
+     */
+    private function AdjustTemperature(): void
+    {
+        if ($this->GetValue('AutomaticMode')) {
+            if ($this->ReadPropertyBoolean('AdjustTemperature')) {
+                $this->SetActualAction();
+            } else {
+                $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
+            }
+        }
     }
 }

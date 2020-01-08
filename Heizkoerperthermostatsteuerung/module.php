@@ -40,6 +40,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
     // Constants
     private const MINIMUM_DELAY_MILLISECONDS = 100;
+    private const HOMEMATIC_DEVICE_GUID = '{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}';
 
     public function Create()
     {
@@ -72,24 +73,33 @@ class Heizkoerperthermostatsteuerung extends IPSModule
             return;
         }
 
+        // Validate configuration
+        $this->ValidateConfiguration();
+
+        // Disable timers
+        $this->DisableTimers();
+
         // Create links
         $this->CreateLinks();
 
         // Set options
         $this->SetOptions();
 
-        // Disable timers
-        $this->DisableTimers();
-
         // Register messages
         $this->RegisterMessages();
 
-        // Updates
+        // Update values
         $this->SetVariableValue('BoostMode');
         $this->SetVariableValue('ThermostatTemperature');
         $this->SetVariableValue('RoomTemperature');
+        $this->SetVariableValue('ValveState');
+        $this->SetVariableValue('BatteryState');
+
+        // Adjust temperature
+        $this->AdjustTemperature();
+
+        // Check door and window sensors
         $this->CheckDoorWindowSensors();
-        $this->SetActualAction();
     }
 
     public function Destroy()
@@ -114,7 +124,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
             // $Data[2] = last value
             case VM_UPDATE:
 
-                // Door window sensors
+                // Door and window sensors
                 $doorWindowSensors = json_decode($this->ReadPropertyString('DoorWindowSensors'), true);
                 if (!empty($doorWindowSensors)) {
                     if (array_search($SenderID, array_column($doorWindowSensors, 'ID')) !== false) {
@@ -133,11 +143,24 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 if ($SenderID == $this->ReadPropertyInteger('ThermostatTemperature')) {
                     if ($Data[1]) {
                         $this->SetVariableValue('ThermostatTemperature');
+                        if (!$this->GetValue('AutomaticMode')) {
+                            $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
+                        }
                     }
                 }
                 if ($SenderID == $this->ReadPropertyInteger('RoomTemperature')) {
                     if ($Data[1]) {
                         $this->SetVariableValue('RoomTemperature');
+                    }
+                }
+                if ($SenderID == $this->ReadPropertyInteger('ValveState')) {
+                    if ($Data[1]) {
+                        $this->SetVariableValue('ValveState');
+                    }
+                }
+                if ($SenderID == $this->ReadPropertyInteger('BatteryState')) {
+                    if ($Data[1]) {
+                        $this->SetVariableValue('BatteryState');
                     }
                 }
                 break;
@@ -162,6 +185,14 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $registeredMessages = $this->GetMessageList();
         echo "Registrierte Nachrichten:\n\n";
         print_r($registeredMessages);
+    }
+
+    public function SetVariableValue(string $Name): void
+    {
+        if (!$this->ValidatePropertyVariable($Name)) {
+            return;
+        }
+        $this->SetValue($Name, GetValue($this->ReadPropertyInteger($Name)));
     }
 
     //#################### Request action
@@ -196,11 +227,16 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyBoolean('EnableBoostMode', true);
         $this->RegisterPropertyBoolean('EnableThermostatTemperature', true);
         $this->RegisterPropertyBoolean('EnableRoomTemperature', true);
+        $this->RegisterPropertyBoolean('EnableValveState', true);
+        $this->RegisterPropertyBoolean('EnableBatteryState', true);
 
         // Radiator thermostat
+        $this->RegisterPropertyInteger('ThermostatInstance', 0);
         $this->RegisterPropertyInteger('ThermostatTemperature', 0);
         $this->RegisterPropertyInteger('BoostMode', 0);
         $this->RegisterPropertyInteger('RoomTemperature', 0);
+        $this->RegisterPropertyInteger('ValveState', 0);
+        $this->RegisterPropertyInteger('BatteryState', 0);
 
         // Temperatures
         $this->RegisterPropertyFloat('SetBackTemperature', 18.0);
@@ -209,9 +245,11 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
         // Weekly schedule
         $this->RegisterPropertyInteger('WeeklySchedule', 0);
+        $this->RegisterPropertyBoolean('AdjustTemperature', false);
         $this->RegisterPropertyInteger('ExecutionDelay', 3);
 
-        // Door window sensors
+        // Door and window sensors
+        $this->RegisterPropertyBoolean('ReduceTemperature', true);
         $this->RegisterPropertyString('DoorWindowSensors', '[]');
         $this->RegisterPropertyInteger('ReviewDelay', 0);
     }
@@ -241,7 +279,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         IPS_SetVariableProfileAssociation($profile, 0, 'Aus', 'Execute', -1);
         IPS_SetVariableProfileAssociation($profile, 1, 'An', 'Clock', 0x00FF00);
 
-        // Door and window status
+        // Door and window state
         $profile = 'HKTS.' . $this->InstanceID . '.DoorWindowState';
         if (!IPS_VariableProfileExists($profile)) {
             IPS_CreateVariableProfile($profile, 0);
@@ -266,11 +304,19 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         }
         IPS_SetVariableProfileAssociation($profile, 0, 'Aus', 'Flame', 0x0000FF);
         IPS_SetVariableProfileAssociation($profile, 1, 'An', 'Flame', 0xFF0000);
+
+        // Battery state
+        $profile = 'HKTS.' . $this->InstanceID . '.BatteryState';
+        if (!IPS_VariableProfileExists($profile)) {
+            IPS_CreateVariableProfile($profile, 0);
+        }
+        IPS_SetVariableProfileAssociation($profile, 0, 'OK', 'Battery', 0x00FF00);
+        IPS_SetVariableProfileAssociation($profile, 1, 'Batterie schwach', 'Battery', 0xFF0000);
     }
 
     private function DeleteProfiles(): void
     {
-        $profiles = ['AutomaticMode', 'DoorWindowState', 'SetPointTemperature', 'BoostMode'];
+        $profiles = ['AutomaticMode', 'DoorWindowState', 'SetPointTemperature', 'BoostMode', 'BatteryState'];
         foreach ($profiles as $profile) {
             $profileName = 'HKTS.' . $this->InstanceID . '.' . $profile;
             if (@IPS_VariableProfileExists($profileName)) {
@@ -286,7 +332,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterVariableBoolean('AutomaticMode', 'Automatik', $profile, 0);
         $this->EnableAction('AutomaticMode');
 
-        // Door and window status
+        // Door and window state
         $profile = 'HKTS.' . $this->InstanceID . '.DoorWindowState';
         $this->RegisterVariableBoolean('DoorWindowState', 'Tür- / Fensterstatus', $profile, 2);
 
@@ -306,6 +352,13 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
         // Room temperature
         $this->RegisterVariableFloat('RoomTemperature', 'Raum-Temperatur', 'Temperature', 6);
+
+        // Valve state
+        $this->RegisterVariableFloat('ValveState', 'Ventilstatus', '~Intensity.1', 7);
+
+        // Battery state
+        $profile = 'HKTS.' . $this->InstanceID . '.BatteryState';
+        $this->RegisterVariableBoolean('BatteryState', 'Batteriestatus', $profile, 8);
     }
 
     private function CreateLinks(): void
@@ -368,6 +421,16 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $id = $this->GetIDForIdent('RoomTemperature');
         $use = $this->ReadPropertyBoolean('EnableRoomTemperature');
         IPS_SetHidden($id, !$use);
+
+        // Valve state
+        $id = $this->GetIDForIdent('ValveState');
+        $use = $this->ReadPropertyBoolean('EnableValveState');
+        IPS_SetHidden($id, !$use);
+
+        // Battery state
+        $id = $this->GetIDForIdent('BatteryState');
+        $use = $this->ReadPropertyBoolean('EnableBatteryState');
+        IPS_SetHidden($id, !$use);
     }
 
     private function RegisterTimers(): void
@@ -407,7 +470,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
             $this->RegisterMessage($weeklySchedule, EM_UPDATE);
         }
 
-        // Register door window sensors
+        // Door and window sensors
         $doorWindowSensors = json_decode($this->ReadPropertyString('DoorWindowSensors'));
         if (!empty($doorWindowSensors)) {
             foreach ($doorWindowSensors as $doorWindowSensor) {
@@ -437,5 +500,127 @@ class Heizkoerperthermostatsteuerung extends IPSModule
             $id = $this->ReadPropertyInteger($name);
             $this->RegisterMessage($id, VM_UPDATE);
         }
+
+        $name = 'ValveState';
+        if ($this->ValidatePropertyVariable($name)) {
+            $id = $this->ReadPropertyInteger($name);
+            $this->RegisterMessage($id, VM_UPDATE);
+        }
+        $name = 'BatteryState';
+        if ($this->ValidatePropertyVariable($name)) {
+            $id = $this->ReadPropertyInteger($name);
+            $this->RegisterMessage($id, VM_UPDATE);
+        }
+    }
+
+    private function ValidateConfiguration(): void
+    {
+        $state = 102;
+        // Thermostat instance
+        $id = $this->ReadPropertyInteger('ThermostatInstance');
+        if ($id != 0) {
+            if (!@IPS_ObjectExists($id)) {
+                $this->LogMessage('Heizkörperthermostat ID ungültig!', KL_ERROR);
+                $state = 200;
+            } else {
+                $instance = IPS_GetInstance($id);
+                $moduleID = $instance['ModuleInfo']['ModuleID'];
+                if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
+                    $this->LogMessage('Heizkörperthermostat GUID ungültig!', KL_ERROR);
+                    $state = 200;
+                }
+            }
+        }
+
+        // Thermostat temperature
+        $id = $this->ReadPropertyInteger('ThermostatTemperature');
+        if ($id != 0) {
+            if (!@IPS_ObjectExists($id)) {
+                $this->LogMessage('Thermostat-Temperatur ID ungültig!', KL_ERROR);
+                $state = 200;
+            } else {
+                $parent = IPS_GetParent($id);
+                if ($parent == 0) {
+                    $this->LogMessage('Thermostat-Temperatur, keine übergeordnete ID gefunden!', KL_ERROR);
+                    $state = 200;
+                } else {
+                    $instance = IPS_GetInstance($parent);
+                    $moduleID = $instance['ModuleInfo']['ModuleID'];
+                    if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
+                        $this->LogMessage('Thermostat-Temperatur GUID ungültig!', KL_ERROR);
+                        $state = 200;
+                    }
+                }
+            }
+        }
+
+        // Boost mode
+        $id = $this->ReadPropertyInteger('BoostMode');
+        if ($id != 0) {
+            if (!@IPS_ObjectExists($id)) {
+                $this->LogMessage('Boost-Modus ID ungültig!', KL_ERROR);
+                $state = 200;
+            } else {
+                $parent = IPS_GetParent($id);
+                if ($parent == 0) {
+                    $this->LogMessage('Boost-Modus, keine übergeordnete ID gefunden!', KL_ERROR);
+                    $state = 200;
+                } else {
+                    $instance = IPS_GetInstance($parent);
+                    $moduleID = $instance['ModuleInfo']['ModuleID'];
+                    if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
+                        $this->LogMessage('Boost-Modus GUID ungültig!', KL_ERROR);
+                        $state = 200;
+                    }
+                }
+            }
+        }
+
+        // Valve state
+        $id = $this->ReadPropertyInteger('ValveState');
+        if ($id != 0) {
+            if (!@IPS_ObjectExists($id)) {
+                $this->LogMessage('Ventilstatus ID ungültig!', KL_ERROR);
+                $state = 200;
+            } else {
+                $parent = IPS_GetParent($id);
+                if ($parent == 0) {
+                    $this->LogMessage('Ventilstatus, keine übergeordnete ID gefunden!', KL_ERROR);
+                    $state = 200;
+                } else {
+                    $instance = IPS_GetInstance($parent);
+                    $moduleID = $instance['ModuleInfo']['ModuleID'];
+                    if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
+                        $this->LogMessage('Ventilstatus GUID ungültig!', KL_ERROR);
+                        $state = 200;
+                    }
+                }
+            }
+        }
+
+        // Battery state
+        $id = $this->ReadPropertyInteger('BatteryState');
+        if ($id != 0) {
+            if (!@IPS_ObjectExists($id)) {
+                $this->LogMessage('Batteriestatus ID ungültig!', KL_ERROR);
+                $state = 200;
+            } else {
+                $parent = IPS_GetParent($id);
+                if ($parent == 0) {
+                    $this->LogMessage('Batteriestatus, keine übergeordnete ID gefunden!', KL_ERROR);
+                    $state = 200;
+                } else {
+                    $instance = IPS_GetInstance($parent);
+                    $moduleID = $instance['ModuleInfo']['ModuleID'];
+                    if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
+                        $this->LogMessage('Batteriestatus GUID ungültig!', KL_ERROR);
+                        $state = 200;
+                    }
+                }
+            }
+        }
+
+        // Set state
+        $this->SetStatus($state);
     }
 }

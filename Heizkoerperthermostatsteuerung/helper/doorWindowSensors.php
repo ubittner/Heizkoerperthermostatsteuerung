@@ -6,7 +6,7 @@ declare(strict_types=1);
 trait HKTS_doorWindowSensors
 {
     /**
-     * Checks the state of the door and window sensors.
+     * Checks the state of the activated door and window sensors.
      */
     public function CheckDoorWindowSensors(): void
     {
@@ -24,8 +24,10 @@ trait HKTS_doorWindowSensors
                     $this->SetValue('BoostMode', false);
                     IPS_Sleep(250);
                 }
-                // Set back temperature
-                $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
+                if ($this->ReadPropertyBoolean('ReduceTemperature')) {
+                    // Set back temperature
+                    $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
+                }
             } // Closed
             else {
                 $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
@@ -55,8 +57,10 @@ trait HKTS_doorWindowSensors
                     $this->ToggleBoostMode(false);
                     IPS_Sleep(250);
                 }
-                // Set back temperature
-                $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
+                if ($this->ReadPropertyBoolean('ReduceTemperature')) {
+                    // Set back temperature
+                    $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
+                }
             } else {
                 $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
             }
