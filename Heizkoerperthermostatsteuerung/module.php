@@ -398,7 +398,6 @@ class Heizkoerperthermostatsteuerung extends IPSModule
             IPS_SetHidden($id, $hide);
         }
 
-
         // Door and window state
         $id = $this->GetIDForIdent('DoorWindowState');
         $use = $this->ReadPropertyBoolean('EnableDoorWindowState');
