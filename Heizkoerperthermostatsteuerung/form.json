@@ -265,27 +265,7 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus die Temperatur abgesenkt werden soll:"
-        },
-        {
-          "type": "CheckBox",
-          "name": "ReduceTemperature",
-          "caption": "Temperatur absenken"
-        },
-        {
-          "type": "Label",
-          "caption": "\nBitte geben Sie die Absenktemperatur in °C an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "OpenDoorWindowTemperature",
-          "caption": "Absenktemperatur",
-          "digits": 1,
-          "suffix": "°C"
-        },
-        {
-          "type": "Label",
-          "caption": "\nBitte wählen Sie die Variablen für die Tür- und Fenstersensoren (HM: Kanal 1 STATE, HmIP: Kanal 1 STATE) aus:"
+          "caption": "Bitte wählen Sie die Variablen für die Tür- und Fenstersensoren (HM: Kanal 1 STATE, HmIP: Kanal 1 STATE) aus:"
         },
         {
           "type": "List",
@@ -328,6 +308,26 @@
           "name": "ReviewDelay",
           "caption": "Erneute Überprüfung",
           "suffix": "s"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus die Temperatur abgesenkt werden soll:"
+        },
+        {
+          "type": "CheckBox",
+          "name": "ReduceTemperature",
+          "caption": "Temperatur absenken"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte geben Sie die Absenktemperatur in °C an:"
+        },
+        {
+          "type": "NumberSpinner",
+          "name": "OpenDoorWindowTemperature",
+          "caption": "Absenktemperatur",
+          "digits": 1,
+          "suffix": "°C"
         }
       ]
     }
