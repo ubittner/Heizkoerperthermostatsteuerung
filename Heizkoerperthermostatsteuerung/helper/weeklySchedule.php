@@ -15,6 +15,19 @@ trait HKTS_weeklySchedule
     public function ToggleAutomaticMode(bool $State): void
     {
         $this->SetValue('AutomaticMode', $State);
+        // Set thermostat to manual mode
+        if ($State) {
+            $id = $this->ReadPropertyInteger('ThermostatInstance');
+            if ($id != 0 && @IPS_ObjectExists($id)) {
+                $mode = @HM_WriteValueInteger($id, 'CONTROL_MODE', 1);
+                if (!$mode) {
+                    $this->LogMessage(__FUNCTION__ . ' Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', KL_ERROR);
+                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', 0);
+                } else {
+                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat wurde auf den manuellen Modus umgestellt.', 0);
+                }
+            }
+        }
         $this->AdjustTemperature();
     }
 
@@ -39,65 +52,6 @@ trait HKTS_weeklySchedule
         echo "Aktuelle Aktion:\n\n" . $actionName;
     }
 
-    /**
-     * Sets the temperature according to the actual action of the weekly schedule.
-     */
-    public function SetActualAction(): void
-    {
-        // Check event plan
-        if (!$this->ValidateEventPlan()) {
-            return;
-        }
-        // Set action only in automatic mode
-        if ($this->GetValue('AutomaticMode')) {
-            $actionID = $this->GetActualAction();
-            switch ($actionID) {
-                // No actual action found
-                case 0:
-                    $this->SendDebug(__FUNCTION__, '0 = Keine Aktion gefunden!', 0);
-                    break;
-
-                // Set-back temperature
-                case 1:
-                    $this->SendDebug(__FUNCTION__, '1 = Absenkung durchführen', 0);
-                    $temperature = $this->GetPropertyTemperature('SetBackTemperature');
-                    break;
-
-                // Pre-heating temperature
-                case 2:
-                    $this->SendDebug(__FUNCTION__, '2 = Vorwärmen', 0);
-                    $temperature = $this->GetPropertyTemperature('PreHeatingTemperature');
-                    break;
-
-                // Heating temperature
-                case 3:
-                    $this->SendDebug(__FUNCTION__, '3 = Heizen', 0);
-                    $temperature = $this->GetPropertyTemperature('HeatingTemperature');
-                    break;
-
-            }
-            if (isset($temperature)) {
-                $this->SetValue('SetPointTemperature', $temperature);
-                // Only set temperature if all doors and windows are closed
-                if (!$this->GetValue('DoorWindowState')) {
-                    // Boost mode must be off
-                    if (!$this->GetValue('BoostMode')) {
-                        // Check delay
-                        $executionDelay = $this->ReadPropertyInteger('ExecutionDelay');
-                        if ($executionDelay > 0) {
-                            // Delay
-                            $min = self::MINIMUM_DELAY_MILLISECONDS;
-                            $max = $executionDelay * 1000;
-                            $delay = rand($min, $max);
-                            IPS_Sleep($delay);
-                        }
-                        $this->SetThermostatTemperature($temperature);
-                    }
-                }
-            }
-        }
-    }
-
     //#################### Private
 
     /**
@@ -119,6 +73,69 @@ trait HKTS_weeklySchedule
             }
         }
         return $result;
+    }
+
+    /**
+     * Sets the temperature according to the actual action of the weekly schedule.
+     */
+    private function SetActualAction(): void
+    {
+        if (!$this->ValidateEventPlan()) {
+            return;
+        }
+        // Set action only in automatic mode
+        if ($this->GetValue('AutomaticMode')) {
+            $actionID = $this->GetActualAction();
+            switch ($actionID) {
+                // No actual action found
+                case 0:
+                    $this->SendDebug(__FUNCTION__, '0 = Keine Aktion gefunden!', 0);
+                    break;
+
+                // Set-back temperature
+                case 1:
+                    $this->SendDebug(__FUNCTION__, '1 = Absenkmodus', 0);
+                    $temperature = $this->ReadPropertyFloat('SetBackTemperature');
+                    break;
+
+                // Pre-heating temperature
+                case 2:
+                    $this->SendDebug(__FUNCTION__, '2 = Vorwärmmodus', 0);
+                    $temperature = $this->ReadPropertyFloat('PreHeatingTemperature');
+                    break;
+
+                // Heating temperature
+                case 3:
+                    $this->SendDebug(__FUNCTION__, '3 = Heizmodus', 0);
+                    $temperature = $this->ReadPropertyFloat('HeatingTemperature');
+                    break;
+
+                // Boost temperature
+                case 4:
+                    $this->SendDebug(__FUNCTION__, '4 = Boostmodus', 0);
+                    $temperature = $this->ReadPropertyFloat('BoostTemperature');
+                    break;
+
+            }
+            if (isset($temperature)) {
+                $this->SetValue('SetPointTemperature', $temperature);
+                // Only set temperature if all doors and windows are closed
+                if (!$this->GetValue('DoorWindowState')) {
+                    // Boost mode must be off
+                    if (!$this->GetValue('BoostMode')) {
+                        $executionDelay = $this->ReadPropertyInteger('ExecutionDelay');
+                        // Delay
+                        if ($executionDelay > 0) {
+                            $min = self::MINIMUM_DELAY_MILLISECONDS;
+                            $max = $executionDelay * 1000;
+                            $delay = rand($min, $max);
+                            IPS_Sleep($delay);
+                        }
+                        $this->SetThermostatTemperature($temperature);
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -6,49 +6,15 @@ declare(strict_types=1);
 trait HKTS_doorWindowSensors
 {
     /**
-     * Checks the state of the activated door and window sensors.
-     */
-    public function CheckDoorWindowSensors(): void
-    {
-        // Get actual state of doors and windows
-        $state = $this->GetDoorWindowState();
-        $delay = $this->ReadPropertyInteger('ReviewDelay');
-        // Check now, no delay
-        if ($delay == 0) {
-            $this->SetValue('DoorWindowState', $state);
-            $this->DisableTimers();
-            // Opened
-            if ($state) {
-                // Deactivate boost mode
-                if ($this->GetValue('BoostMode')) {
-                    $this->SetValue('BoostMode', false);
-                    IPS_Sleep(250);
-                }
-                if ($this->ReadPropertyBoolean('ReduceTemperature')) {
-                    // Set back temperature
-                    $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
-                }
-            } // Closed
-            else {
-                $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
-            }
-        } else {
-            // Delay
-            $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);
-        }
-    }
-
-    /**
      * Checks the state of the door and window sensors again after the defined delay.
      */
     public function ReviewDoorWindowSensors(): void
     {
-        // Disable timer
-        $this->DisableTimers();
+        $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
         $lastState = $this->GetValue('DoorWindowState');
         $actualState = $this->GetDoorWindowState();
         $this->SetValue('DoorWindowState', $actualState);
-        // The door and window state has changed since first check
+        // State has changed
         if ($actualState != $lastState) {
             // Doors and windows are still open
             if ($actualState) {
@@ -57,22 +23,81 @@ trait HKTS_doorWindowSensors
                     $this->ToggleBoostMode(false);
                     IPS_Sleep(250);
                 }
+                // Reduce temperature
                 if ($this->ReadPropertyBoolean('ReduceTemperature')) {
-                    // Set back temperature
-                    $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
+                    $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
                 }
-            } else {
+            }
+            // Doors and windows are closed
+            else {
                 $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
             }
-        } else {
+        }
+        // State has not changed
+        else {
+            // Reduce temperature
             if ($this->GetValue('DoorWindowState')) {
-                // Set back temperature
-                $this->SetThermostatTemperature($this->GetPropertyTemperature('SetBackTemperature'));
+                $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
             }
         }
     }
 
     //#################### Private
+
+    /**
+     * Checks the state of the activated door and window sensors.
+     */
+    private function CheckDoorWindowSensors(): void
+    {
+        $state = $this->GetDoorWindowState();
+        $delay = $this->ReadPropertyInteger('ReviewDelay');
+        // Check now, no delay
+        if ($delay == 0) {
+            $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
+            $this->SetValue('DoorWindowState', $state);
+            // Opened
+            if ($state) {
+                // Check boost mode
+                if ($this->GetValue('BoostMode')) {
+                    $this->ToggleBoostMode(false);
+                    IPS_Sleep(250);
+                }
+                // Reduce temperature
+                if ($this->ReadPropertyBoolean('ReduceTemperature')) {
+                    $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
+                }
+            }
+            // Closed
+            else {
+                $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
+            }
+        }
+        // Delay
+        else {
+            $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);
+        }
+    }
+
+    /**
+     * Gets the state of the door and window sensors.
+     *
+     * @return bool
+     * false    = closed
+     * true     = opened
+     */
+    private function GetDoorWindowState(): bool
+    {
+        $state = false;
+        $sensors = $this->GetDoorWindowSensors();
+        if (!empty($sensors)) {
+            foreach ($sensors as $sensor) {
+                if (boolval(GetValue($sensor))) {
+                    $state = true;
+                }
+            }
+        }
+        return $state;
+    }
 
     /**
      * Gets the activated door and window sensors.
@@ -95,26 +120,5 @@ trait HKTS_doorWindowSensors
             }
         }
         return $sensors;
-    }
-
-    /**
-     * Gets the state of the door and window sensors.
-     *
-     * @return bool
-     * false    = closed
-     * true     = opened
-     */
-    private function GetDoorWindowState(): bool
-    {
-        $state = false;
-        $sensors = $this->GetDoorWindowSensors();
-        if (!empty($sensors)) {
-            foreach ($sensors as $sensor) {
-                if (boolval(GetValue($sensor))) {
-                    $state = true;
-                }
-            }
-        }
-        return $state;
     }
 }
