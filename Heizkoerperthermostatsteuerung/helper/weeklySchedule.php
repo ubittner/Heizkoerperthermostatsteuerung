@@ -29,6 +29,14 @@ trait HKTS_weeklySchedule
             }
         }
         $this->AdjustTemperature();
+        $id = @IPS_GetLinkIDByName('Wochenplan', $this->InstanceID);
+        if ($id !== false) {
+            $hide = true;
+            if ($this->ReadPropertyBoolean('EnableWeeklySchedule') && $State) {
+                $hide = false;
+            }
+            IPS_SetHidden($id, $hide);
+        }
     }
 
     /**
