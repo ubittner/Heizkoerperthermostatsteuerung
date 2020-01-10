@@ -160,7 +160,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
             // $Data[1] = next run
             case EM_UPDATE:
                 // Weekly schedule
-                $this->SetActualAction();
+                $this->SetActualAction(true);
                 break;
 
         }
@@ -228,6 +228,10 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 $this->ToggleBoostMode($Value);
                 break;
 
+            case 'PartyMode':
+                $this->TogglePartyMode($Value);
+                break;
+
         }
     }
 
@@ -241,6 +245,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyBoolean('EnableDoorWindowState', true);
         $this->RegisterPropertyBoolean('EnableSetPointTemperature', true);
         $this->RegisterPropertyBoolean('EnableBoostMode', true);
+        $this->RegisterPropertyBoolean('EnablePartyMode', true);
         $this->RegisterPropertyBoolean('EnableThermostatTemperature', true);
         $this->RegisterPropertyBoolean('EnableRoomTemperature', true);
         $this->RegisterPropertyBoolean('EnableBatteryState', true);
@@ -261,14 +266,15 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
         // Weekly schedule
         $this->RegisterPropertyInteger('WeeklySchedule', 0);
-        $this->RegisterPropertyBoolean('AdjustTemperature', false);
+        $this->RegisterPropertyBoolean('UseAdjustTemperature', false);
         $this->RegisterPropertyInteger('ExecutionDelay', 3);
 
         // Door and window sensors
-        $this->RegisterPropertyBoolean('ReduceTemperature', true);
-        $this->RegisterPropertyInteger('OpenDoorWindowTemperature', 12);
         $this->RegisterPropertyString('DoorWindowSensors', '[]');
         $this->RegisterPropertyInteger('ReviewDelay', 0);
+        $this->RegisterPropertyBoolean('UseReduceTemperature', true);
+        $this->RegisterPropertyFloat('OpenDoorWindowTemperature', 12);
+        $this->RegisterPropertyBoolean('UseBoostMode', false);
     }
 
     private function CreateProfiles(): void
@@ -299,13 +305,21 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         IPS_SetVariableProfileDigits($profile, 1);
         IPS_SetVariableProfileText($profile, '', ' °C');
 
-        // Boost control
+        // Boost mode
         $profile = 'HKTS.' . $this->InstanceID . '.BoostMode';
         if (!IPS_VariableProfileExists($profile)) {
             IPS_CreateVariableProfile($profile, 0);
         }
         IPS_SetVariableProfileAssociation($profile, 0, 'Aus', 'Flame', 0x0000FF);
         IPS_SetVariableProfileAssociation($profile, 1, 'An', 'Flame', 0xFF0000);
+
+        // Party mode
+        $profile = 'HKTS.' . $this->InstanceID . '.PartyMode';
+        if (!IPS_VariableProfileExists($profile)) {
+            IPS_CreateVariableProfile($profile, 0);
+        }
+        IPS_SetVariableProfileAssociation($profile, 0, 'Aus', 'Party', 0x0000FF);
+        IPS_SetVariableProfileAssociation($profile, 1, 'An', 'Hourglass', 0xFFFF00);
 
         // Battery state
         $profile = 'HKTS.' . $this->InstanceID . '.BatteryState';
@@ -318,7 +332,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
     private function DeleteProfiles(): void
     {
-        $profiles = ['AutomaticMode', 'DoorWindowState', 'SetPointTemperature', 'BoostMode', 'BatteryState'];
+        $profiles = ['AutomaticMode', 'DoorWindowState', 'SetPointTemperature', 'BoostMode', 'PartyMode', 'BatteryState'];
         foreach ($profiles as $profile) {
             $profileName = 'HKTS.' . $this->InstanceID . '.' . $profile;
             if (@IPS_VariableProfileExists($profileName)) {
@@ -348,12 +362,17 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterVariableBoolean('BoostMode', 'Boost-Modus', $profile, 4);
         $this->EnableAction('BoostMode');
 
+        // Party mode
+        $profile = 'HKTS.' . $this->InstanceID . '.PartyMode';
+        $this->RegisterVariableBoolean('PartyMode', 'Party-Modus', $profile, 5);
+        $this->EnableAction('PartyMode');
+
         // Thermostat temperature
-        $this->RegisterVariableFloat('ThermostatTemperature', 'Thermostat-Temperatur', 'Temperature', 5);
+        $this->RegisterVariableFloat('ThermostatTemperature', 'Thermostat-Temperatur', 'Temperature', 6);
         IPS_SetIcon($this->GetIDForIdent('ThermostatTemperature'), 'Radiator');
 
         // Room temperature
-        $this->RegisterVariableFloat('RoomTemperature', 'Raum-Temperatur', 'Temperature', 6);
+        $this->RegisterVariableFloat('RoomTemperature', 'Raum-Temperatur', 'Temperature', 7);
 
         // Battery state
         $profile = 'HKTS.' . $this->InstanceID . '.BatteryState';
@@ -413,6 +432,11 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $use = $this->ReadPropertyBoolean('EnableBoostMode');
         IPS_SetHidden($id, !$use);
 
+        // Party mode
+        $id = $this->GetIDForIdent('PartyMode');
+        $use = $this->ReadPropertyBoolean('EnablePartyMode');
+        IPS_SetHidden($id, !$use);
+
         // Thermostat temperature
         $id = $this->GetIDForIdent('ThermostatTemperature');
         $use = $this->ReadPropertyBoolean('EnableThermostatTemperature');
@@ -433,12 +457,14 @@ class Heizkoerperthermostatsteuerung extends IPSModule
     {
         $this->RegisterTimer('ReviewDoorWindowSensors', 0, 'HKTS_ReviewDoorWindowSensors(' . $this->InstanceID . ');');
         $this->RegisterTimer('DeactivateBoostMode', 0, 'HKTS_ToggleBoostMode(' . $this->InstanceID . ', false);');
+        $this->RegisterTimer('DeactivatePartyMode', 0, 'HKTS_TogglePartyMode(' . $this->InstanceID . ', false);');
     }
 
     private function DisableTimers(): void
     {
         $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
         $this->SetTimerInterval('DeactivateBoostMode', 0);
+        $this->SetTimerInterval('DeactivatePartyMode', 0);
     }
 
     private function UnregisterMessages(): void

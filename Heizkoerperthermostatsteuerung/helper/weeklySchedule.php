@@ -85,8 +85,12 @@ trait HKTS_weeklySchedule
 
     /**
      * Sets the temperature according to the actual action of the weekly schedule.
+     *
+     * @param bool $SetTemperature
+     * false    = don't set temperature
+     * true     = set temperature
      */
-    private function SetActualAction(): void
+    private function SetActualAction(bool $SetTemperature): void
     {
         if (!$this->ValidateEventPlan()) {
             return;
@@ -125,7 +129,7 @@ trait HKTS_weeklySchedule
                     break;
 
             }
-            if (isset($temperature)) {
+            if ($SetTemperature && isset($temperature)) {
                 $this->SetValue('SetPointTemperature', $temperature);
                 // Only set temperature if all doors and windows are closed
                 if (!$this->GetValue('DoorWindowState')) {
@@ -139,7 +143,10 @@ trait HKTS_weeklySchedule
                             $delay = rand($min, $max);
                             IPS_Sleep($delay);
                         }
-                        $this->SetThermostatTemperature($temperature);
+                        // Set tempertaur if party mode is disabled
+                        if ($this->GetValue('PartyMode')) {
+                            $this->SetThermostatTemperature($temperature);
+                        }
                     }
                 }
             }

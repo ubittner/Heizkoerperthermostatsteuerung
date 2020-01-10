@@ -77,7 +77,12 @@
         {
           "type": "CheckBox",
           "name": "EnableBoostMode",
-          "caption": "Boostmodus"
+          "caption": "Boost-Modus"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnablePartyMode",
+          "caption": "Party-Modus"
         },
         {
           "type": "CheckBox",
@@ -254,7 +259,7 @@
         },
         {
           "type": "CheckBox",
-          "name": "AdjustTemperature",
+          "name": "UseAdjustTemperature",
           "caption": "Temperatur anpassen"
         }
       ]
@@ -315,7 +320,7 @@
         },
         {
           "type": "CheckBox",
-          "name": "ReduceTemperature",
+          "name": "UseReduceTemperature",
           "caption": "Temperatur absenken"
         },
         {
@@ -328,6 +333,15 @@
           "caption": "Absenktemperatur",
           "digits": 1,
           "suffix": "°C"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus verwendet werden soll:"
+        },
+        {
+          "type": "CheckBox",
+          "name": "UseBoostMode",
+          "caption": "Boost-Modus verwenden"
         }
       ]
     }

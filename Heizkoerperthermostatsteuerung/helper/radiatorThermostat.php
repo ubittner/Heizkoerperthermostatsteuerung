@@ -101,6 +101,25 @@ trait HKTS_radiatorThermostat
     }
 
     /**
+     * Toggles the party mode.
+     *
+     * @param bool $State
+     * false    = party mode off
+     * true     = party mode on for next 24 hours
+     */
+    public function TogglePartyMode(bool $State): void
+    {
+        $this->SetValue('PartyMode', $State);
+        if ($State) {
+            // Set timer interval to next 24 hours
+            $this->SetTimerInterval('DeactivatePartyMode', 86400000);
+        } else {
+            $this->SetTimerInterval('DeactivatePartyMode', 0);
+            $this->SetActualAction(true);
+        }
+    }
+
+    /**
      * Sets the temperature on the radiator thermostat.
      *
      * @param float $Temperature
@@ -135,9 +154,13 @@ trait HKTS_radiatorThermostat
     private function AdjustTemperature(): void
     {
         if ($this->GetValue('AutomaticMode')) {
-            if ($this->ReadPropertyBoolean('AdjustTemperature')) {
-                $this->SetActualAction();
+            $setTemperature = false;
+            if ($this->ReadPropertyBoolean('UseAdjustTemperature')) {
+                $setTemperature = true;
             }
+            $this->SetActualAction($setTemperature);
+        } else {
+            $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
         }
     }
 

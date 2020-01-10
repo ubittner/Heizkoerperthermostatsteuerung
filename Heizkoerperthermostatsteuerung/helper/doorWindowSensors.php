@@ -16,22 +16,29 @@ trait HKTS_doorWindowSensors
         $this->SetValue('DoorWindowState', $actualState);
         // State has changed
         if ($actualState != $lastState) {
-            // Doors and windows are still open
-            if ($actualState) {
-                // Deactivate boost mode
-                if ($this->GetValue('BoostMode')) {
-                    $this->ToggleBoostMode(false);
-                    IPS_Sleep(250);
-                }
-                // Reduce temperature
-                if ($this->ReadPropertyBoolean('ReduceTemperature')) {
-                    $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
-                }
+            $this->ExecuteDoorWindowAction($actualState);
+        /*
+        // Doors and windows are still open
+        if ($actualState) {
+            // Deactivate boost mode
+            if ($this->GetValue('BoostMode')) {
+                $this->ToggleBoostMode(false);
+                IPS_Sleep(250);
             }
-            // Doors and windows are closed
-            else {
+            // Reduce temperature
+            if ($this->ReadPropertyBoolean('UseReduceTemperature')) {
+                $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
+            }
+        }
+        // Doors and windows are closed
+        else {
+            if ($this->ReadPropertyBoolean('UseBoostMode')) {
+                $this->ToggleBoostMode(true);
+            } else {
                 $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
             }
+        }
+         */
         }
         // State has not changed
         else {
@@ -49,32 +56,71 @@ trait HKTS_doorWindowSensors
      */
     private function CheckDoorWindowSensors(): void
     {
-        $state = $this->GetDoorWindowState();
+        $lastState = $this->GetValue('DoorWindowState');
+        $actualState = $this->GetDoorWindowState();
         $delay = $this->ReadPropertyInteger('ReviewDelay');
-        // Check now, no delay
-        if ($delay == 0) {
-            $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
-            $this->SetValue('DoorWindowState', $state);
+        // State has changed
+        if ($actualState != $lastState) {
+            // Check now, no delay
+            if ($delay == 0) {
+                $this->SetValue('DoorWindowState', $actualState);
+                $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
+                $this->ExecuteDoorWindowAction($actualState);
+            /*
             // Opened
-            if ($state) {
-                // Check boost mode
+            if ($actualState) {
+                // Deactivate boost mode
                 if ($this->GetValue('BoostMode')) {
                     $this->ToggleBoostMode(false);
                     IPS_Sleep(250);
                 }
                 // Reduce temperature
-                if ($this->ReadPropertyBoolean('ReduceTemperature')) {
+                if ($this->ReadPropertyBoolean('UseReduceTemperature')) {
                     $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
                 }
-            }
-            // Closed
+            } // Closed
             else {
-                $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
+                if ($this->ReadPropertyBoolean('UseBoostMode')) {
+                    $this->ToggleBoostMode(true);
+                } else {
+                    $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
+                }
+            }
+             */
+            } // Delay
+            else {
+                $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);
             }
         }
-        // Delay
+    }
+
+    /**
+     * Executes the action based on the door and window state.
+     *
+     * @param bool $State
+     * false    = all doors amd windows are closed
+     * true     = one door or window is opened
+     */
+    private function ExecuteDoorWindowAction(bool $State): void
+    {
+        // Opened
+        if ($State) {
+            // Deactivate boost mode
+            if ($this->GetValue('BoostMode')) {
+                $this->ToggleBoostMode(false);
+                IPS_Sleep(250);
+            }
+            // Reduce temperature
+            if ($this->ReadPropertyBoolean('UseReduceTemperature')) {
+                $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
+            }
+        } // Closed
         else {
-            $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);
+            if ($this->ReadPropertyBoolean('UseBoostMode')) {
+                $this->ToggleBoostMode(true);
+            } else {
+                $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
+            }
         }
     }
 
