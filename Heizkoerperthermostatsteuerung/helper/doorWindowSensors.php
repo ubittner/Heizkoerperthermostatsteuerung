@@ -17,28 +17,6 @@ trait HKTS_doorWindowSensors
         // State has changed
         if ($actualState != $lastState) {
             $this->ExecuteDoorWindowAction($actualState);
-        /*
-        // Doors and windows are still open
-        if ($actualState) {
-            // Deactivate boost mode
-            if ($this->GetValue('BoostMode')) {
-                $this->ToggleBoostMode(false);
-                IPS_Sleep(250);
-            }
-            // Reduce temperature
-            if ($this->ReadPropertyBoolean('UseReduceTemperature')) {
-                $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
-            }
-        }
-        // Doors and windows are closed
-        else {
-            if ($this->ReadPropertyBoolean('UseBoostMode')) {
-                $this->ToggleBoostMode(true);
-            } else {
-                $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
-            }
-        }
-         */
         }
         // State has not changed
         else {
@@ -66,27 +44,6 @@ trait HKTS_doorWindowSensors
                 $this->SetValue('DoorWindowState', $actualState);
                 $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
                 $this->ExecuteDoorWindowAction($actualState);
-            /*
-            // Opened
-            if ($actualState) {
-                // Deactivate boost mode
-                if ($this->GetValue('BoostMode')) {
-                    $this->ToggleBoostMode(false);
-                    IPS_Sleep(250);
-                }
-                // Reduce temperature
-                if ($this->ReadPropertyBoolean('UseReduceTemperature')) {
-                    $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
-                }
-            } // Closed
-            else {
-                if ($this->ReadPropertyBoolean('UseBoostMode')) {
-                    $this->ToggleBoostMode(true);
-                } else {
-                    $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
-                }
-            }
-             */
             } // Delay
             else {
                 $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);

@@ -66,11 +66,6 @@
         },
         {
           "type": "CheckBox",
-          "name": "EnableDoorWindowState",
-          "caption": "Tür- / Fensterstatus"
-        },
-        {
-          "type": "CheckBox",
           "name": "EnableSetPointTemperature",
           "caption": "Soll-Temperatur"
         },
@@ -93,6 +88,11 @@
           "type": "CheckBox",
           "name": "EnableRoomTemperature",
           "caption": "Raum-Temperatur"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableDoorWindowState",
+          "caption": "Tür- / Fensterstatus"
         },
         {
           "type": "CheckBox",

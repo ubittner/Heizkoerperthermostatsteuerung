@@ -143,7 +143,7 @@ trait HKTS_weeklySchedule
                             $delay = rand($min, $max);
                             IPS_Sleep($delay);
                         }
-                        // Set tempertaur if party mode is disabled
+                        // Set temperature if party mode is disabled
                         if ($this->GetValue('PartyMode')) {
                             $this->SetThermostatTemperature($temperature);
                         }
