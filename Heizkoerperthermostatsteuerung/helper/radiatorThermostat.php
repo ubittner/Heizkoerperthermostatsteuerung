@@ -111,11 +111,11 @@ trait HKTS_radiatorThermostat
     {
         $this->SetValue('PartyMode', $State);
         if ($State) {
-            // Set timer interval to next 24 hours
-            $this->SetTimerInterval('DeactivatePartyMode', 86400000);
+            // Set timer interval
+            $this->SetTimerInterval('DeactivatePartyMode', $this->ReadPropertyInteger('PartyDuration') * 60 * 60 * 1000);
         } else {
             $this->SetTimerInterval('DeactivatePartyMode', 0);
-            $this->SetActualAction(true);
+            $this->TriggerAction(true);
         }
     }
 
@@ -158,7 +158,7 @@ trait HKTS_radiatorThermostat
             if ($this->ReadPropertyBoolean('UseAdjustTemperature')) {
                 $setTemperature = true;
             }
-            $this->SetActualAction($setTemperature);
+            $this->TriggerAction($setTemperature);
         } else {
             $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
         }

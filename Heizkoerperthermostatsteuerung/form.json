@@ -217,16 +217,32 @@
           "caption": "Boostmodus",
           "digits": 1,
           "suffix": "°C"
-        },
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Modusdauer",
+      "items": [
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Dauer in Sekunden für den Boostmodus an:"
+          "caption": "Bitte geben Sie die Dauer in Sekunden für den Boost-Modus an:"
         },
         {
           "type": "NumberSpinner",
           "name": "BoostDuration",
-          "caption": "Dauer",
+          "caption": "Boost-Modus",
           "suffix": "s"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte geben Sie die Dauer in Stunden für den Party-Modus an:"
+        },
+        {
+          "type": "NumberSpinner",
+          "name": "PartyDuration",
+          "caption": "Party-Modus",
+          "suffix": "h"
         }
       ]
     },

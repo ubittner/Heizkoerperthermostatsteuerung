@@ -49,7 +49,7 @@ trait HKTS_weeklySchedule
             echo 'Ein Wochenplan ist nicht vorhanden oder der Wochenplan ist inaktiv!';
             return;
         }
-        $actionID = $this->GetActualAction();
+        $actionID = $this->DetermineAction();
         $actionName = '0 = keine Aktion gefunden!';
         $event = IPS_GetEvent($this->ReadPropertyInteger('WeeklySchedule'));
         foreach ($event['ScheduleActions'] as $action) {
@@ -84,20 +84,20 @@ trait HKTS_weeklySchedule
     }
 
     /**
-     * Sets the temperature according to the actual action of the weekly schedule.
+     * Triggers the action of the weekly schedule an sets the temperature.
      *
      * @param bool $SetTemperature
      * false    = don't set temperature
      * true     = set temperature
      */
-    private function SetActualAction(bool $SetTemperature): void
+    private function TriggerAction(bool $SetTemperature): void
     {
         if (!$this->ValidateEventPlan()) {
             return;
         }
         // Set action only in automatic mode
         if ($this->GetValue('AutomaticMode')) {
-            $actionID = $this->GetActualAction();
+            $actionID = $this->DetermineAction();
             switch ($actionID) {
                 // No actual action found
                 case 0:
@@ -154,12 +154,12 @@ trait HKTS_weeklySchedule
     }
 
     /**
-     * Gets the actual action from the weekly schedule.
+     * Determines the action from the weekly schedule.
      *
      * @return int
      * Returns the action id.
      */
-    private function GetActualAction(): int
+    private function DetermineAction(): int
     {
         $actionID = 0;
         if ($this->ValidateEventPlan()) {
