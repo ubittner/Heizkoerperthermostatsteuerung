@@ -89,7 +89,7 @@ trait HKTS_radiatorThermostat
         // Activate boost mode
         if ($State) {
             $temperature = $this->ReadPropertyFloat('BoostTemperature');
-            $duration = $this->ReadPropertyInteger('BoostDuration') * 1000;
+            $duration = $this->ReadPropertyInteger('BoostDuration') * 60 * 1000;
             $this->SetTimerInterval('DeactivateBoostMode', $duration);
         } // Deactivate boost mode
         else {

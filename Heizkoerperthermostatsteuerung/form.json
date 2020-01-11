@@ -226,13 +226,13 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte geben Sie die Dauer in Sekunden für den Boost-Modus an:"
+          "caption": "Bitte geben Sie die Dauer in Minuten für den Boost-Modus an:"
         },
         {
           "type": "NumberSpinner",
           "name": "BoostDuration",
           "caption": "Boost-Modus",
-          "suffix": "s"
+          "suffix": "min"
         },
         {
           "type": "Label",
@@ -352,7 +352,7 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus verwendet werden soll:"
+          "caption": "\nBitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus erneut verwendet werden soll:"
         },
         {
           "type": "CheckBox",
