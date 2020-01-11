@@ -263,7 +263,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyFloat('HeatingTemperature', 22.0);
         $this->RegisterPropertyFloat('BoostTemperature', 30.0);
 
-        // Modus duration
+        // Mode duration
         $this->RegisterPropertyInteger('BoostDuration', 300);
         $this->RegisterPropertyInteger('PartyDuration', 24);
 
