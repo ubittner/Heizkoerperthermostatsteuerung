@@ -546,7 +546,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     $address = strstr($config->Address, ':', false);
                     switch ($deviceType) {
                         // HM
-                        case 0:
+                        case 1:
                             if ($address != ':4') {
                                 $this->LogMessage('Konfiguration: Instanz Heizkörperthermostat Kanal ungültig!', KL_ERROR);
                                 $state = 200;
@@ -554,8 +554,8 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                             break;
 
                         // HmIP
-                        case 1:
                         case 2:
+                        case 3:
                             if ($address != ':1') {
                                 $this->LogMessage('Konfiguration: Instanz Heizkörperthermostat Kanal ungültig!', KL_ERROR);
                                 $state = 200;
@@ -589,7 +589,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                         $address = strstr($config->Address, ':', false);
                         switch ($deviceType) {
                             // HM
-                            case 0:
+                            case 1:
                                 if ($address != ':4') {
                                     $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur Kanal ungültig!', KL_ERROR);
                                     $state = 200;
@@ -597,8 +597,8 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                                 break;
 
                             // HmIP
-                            case 1:
                             case 2:
+                            case 3:
                                 if ($address != ':1') {
                                     $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur Kanal ungültig!', KL_ERROR);
                                     $state = 200;
@@ -652,10 +652,10 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                         $address = strstr($config->Address, ':', false);
                         switch ($deviceType) {
                             // HM
-                            case 0:
-                                // HmIP
                             case 1:
+                                // HmIP
                             case 2:
+                            case 3:
                                 if ($address != ':0') {
                                     $this->LogMessage('Konfiguration: Variable Batteriestatus Kanal ungültig!', KL_ERROR);
                                     $state = 200;
