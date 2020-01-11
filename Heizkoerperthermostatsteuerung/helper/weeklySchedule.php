@@ -29,6 +29,7 @@ trait HKTS_weeklySchedule
             }
         }
         $this->AdjustTemperature();
+        // Weekly schedule visibility
         $id = @IPS_GetLinkIDByName('Wochenplan', $this->InstanceID);
         if ($id !== false) {
             $hide = true;
@@ -95,7 +96,7 @@ trait HKTS_weeklySchedule
         if (!$this->ValidateEventPlan()) {
             return;
         }
-        // Set action only in automatic mode
+        // Trigger action only in automatic mode
         if ($this->GetValue('AutomaticMode')) {
             $actionID = $this->DetermineAction();
             switch ($actionID) {

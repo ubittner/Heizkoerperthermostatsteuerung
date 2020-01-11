@@ -269,15 +269,15 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
         // Weekly schedule
         $this->RegisterPropertyInteger('WeeklySchedule', 0);
-        $this->RegisterPropertyBoolean('UseAdjustTemperature', false);
+        $this->RegisterPropertyBoolean('AdjustTemperature', false);
         $this->RegisterPropertyInteger('ExecutionDelay', 3);
 
         // Door and window sensors
         $this->RegisterPropertyString('DoorWindowSensors', '[]');
         $this->RegisterPropertyInteger('ReviewDelay', 0);
-        $this->RegisterPropertyBoolean('UseReduceTemperature', true);
+        $this->RegisterPropertyBoolean('ReduceTemperature', true);
         $this->RegisterPropertyFloat('OpenDoorWindowTemperature', 12);
-        $this->RegisterPropertyBoolean('UseBoostMode', false);
+        $this->RegisterPropertyBoolean('BoostMode', false);
     }
 
     private function CreateProfiles(): void
@@ -540,6 +540,29 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
                     $this->LogMessage('Konfiguration: Instanz Heizkörperthermostat GUID ungültig!', KL_ERROR);
                     $state = 200;
+                } else {
+                    // Check channel
+                    $config = json_decode(IPS_GetConfiguration($id));
+                    $address = strstr($config->Address, ':', false);
+                    switch ($deviceType) {
+                        // HM
+                        case 0:
+                            if ($address != ':4') {
+                                $this->LogMessage('Konfiguration: Instanz Heizkörperthermostat Kanal ungültig!', KL_ERROR);
+                                $state = 200;
+                            }
+                            break;
+
+                        // HmIP
+                        case 1:
+                        case 2:
+                            if ($address != ':1') {
+                                $this->LogMessage('Konfiguration: Instanz Heizkörperthermostat Kanal ungültig!', KL_ERROR);
+                                $state = 200;
+                            }
+                            break;
+
+                    }
                 }
             }
         }
@@ -560,6 +583,29 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
                         $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur GUID ungültig!', KL_ERROR);
                         $state = 200;
+                    } else {
+                        // Check channel
+                        $config = json_decode(IPS_GetConfiguration($parent));
+                        $address = strstr($config->Address, ':', false);
+                        switch ($deviceType) {
+                            // HM
+                            case 0:
+                                if ($address != ':4') {
+                                    $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur Kanal ungültig!', KL_ERROR);
+                                    $state = 200;
+                                }
+                                break;
+
+                            // HmIP
+                            case 1:
+                            case 2:
+                                if ($address != ':1') {
+                                    $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur Kanal ungültig!', KL_ERROR);
+                                    $state = 200;
+                                }
+                                break;
+
+                        }
                     }
                 }
                 $ident = IPS_GetObject($id)['ObjectIdent'];
@@ -600,6 +646,23 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
                         $this->LogMessage('Konfiguration: Variable Batteriestatus GUID ungültig!', KL_ERROR);
                         $state = 200;
+                    } else {
+                        // Check channel
+                        $config = json_decode(IPS_GetConfiguration($parent));
+                        $address = strstr($config->Address, ':', false);
+                        switch ($deviceType) {
+                            // HM
+                            case 0:
+                                // HmIP
+                            case 1:
+                            case 2:
+                                if ($address != ':0') {
+                                    $this->LogMessage('Konfiguration: Variable Batteriestatus Kanal ungültig!', KL_ERROR);
+                                    $state = 200;
+                                }
+                                break;
+
+                        }
                     }
                 }
                 $ident = IPS_GetObject($id)['ObjectIdent'];
@@ -607,7 +670,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     // HM
                     case 1:
                         if ($ident != 'LOWBAT') {
-                            $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur IDENT ungültig!', KL_ERROR);
+                            $this->LogMessage('Konfiguration: Variable Batteriestatus IDENT ungültig!', KL_ERROR);
                             $state = 200;
                         }
                         break;
@@ -616,7 +679,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     case 2:
                     case 3:
                         if ($ident != 'LOW_BAT') {
-                            $this->LogMessage('Konfiguration: Variable Thermostat-Temperatur IDENT ungültig!', KL_ERROR);
+                            $this->LogMessage('Konfiguration: Variable Batteriestatus IDENT ungültig!', KL_ERROR);
                             $state = 200;
                         }
                         break;

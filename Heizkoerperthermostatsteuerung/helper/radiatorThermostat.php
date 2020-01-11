@@ -158,7 +158,7 @@ trait HKTS_radiatorThermostat
     {
         if ($this->GetValue('AutomaticMode')) {
             $setTemperature = false;
-            if ($this->ReadPropertyBoolean('UseAdjustTemperature')) {
+            if ($this->ReadPropertyBoolean('AdjustTemperature')) {
                 $setTemperature = true;
             }
             $this->TriggerAction($setTemperature);

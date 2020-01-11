@@ -275,7 +275,7 @@
         },
         {
           "type": "CheckBox",
-          "name": "UseAdjustTemperature",
+          "name": "AdjustTemperature",
           "caption": "Temperatur anpassen"
         }
       ]
@@ -336,7 +336,7 @@
         },
         {
           "type": "CheckBox",
-          "name": "UseReduceTemperature",
+          "name": "ReduceTemperature",
           "caption": "Temperatur absenken"
         },
         {
@@ -356,7 +356,7 @@
         },
         {
           "type": "CheckBox",
-          "name": "UseBoostMode",
+          "name": "BoostMode",
           "caption": "Boost-Modus verwenden"
         }
       ]

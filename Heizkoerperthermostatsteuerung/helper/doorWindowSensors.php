@@ -68,12 +68,12 @@ trait HKTS_doorWindowSensors
                 IPS_Sleep(250);
             }
             // Reduce temperature
-            if ($this->ReadPropertyBoolean('UseReduceTemperature')) {
+            if ($this->ReadPropertyBoolean('ReduceTemperature')) {
                 $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
             }
         } // Closed
         else {
-            if ($this->ReadPropertyBoolean('UseBoostMode')) {
+            if ($this->ReadPropertyBoolean('BoostMode')) {
                 $this->ToggleBoostMode(true);
             } else {
                 $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));
