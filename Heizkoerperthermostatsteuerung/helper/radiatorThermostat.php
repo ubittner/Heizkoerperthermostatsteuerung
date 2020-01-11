@@ -105,15 +105,18 @@ trait HKTS_radiatorThermostat
      *
      * @param bool $State
      * false    = party mode off
-     * true     = party mode on for next 24 hours
+     * true     = party mode on
      */
     public function TogglePartyMode(bool $State): void
     {
-        $this->SetValue('PartyMode', $State);
         if ($State) {
-            // Set timer interval
-            $this->SetTimerInterval('DeactivatePartyMode', $this->ReadPropertyInteger('PartyDuration') * 60 * 60 * 1000);
+            if ($this->GetValue('AutomaticMode')) {
+                $this->SetValue('PartyMode', $State);
+                // Set timer interval
+                $this->SetTimerInterval('DeactivatePartyMode', $this->ReadPropertyInteger('PartyDuration') * 60 * 60 * 1000);
+            }
         } else {
+            $this->SetValue('PartyMode', $State);
             $this->SetTimerInterval('DeactivatePartyMode', 0);
             $this->TriggerAction(true);
         }
