@@ -73,7 +73,7 @@ trait HKTS_doorWindowSensors
             }
         } // Closed
         else {
-            if ($this->ReadPropertyBoolean('BoostMode')) {
+            if ($this->ReadPropertyBoolean('ReactivateBoostMode')) {
                 $this->ToggleBoostMode(true);
             } else {
                 $this->SetThermostatTemperature($this->GetValue('SetPointTemperature'));

@@ -356,7 +356,7 @@
         },
         {
           "type": "CheckBox",
-          "name": "BoostMode",
+          "name": "ReactivateBoostMode",
           "caption": "Boost-Modus verwenden"
         }
       ]

@@ -277,7 +277,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyInteger('ReviewDelay', 0);
         $this->RegisterPropertyBoolean('ReduceTemperature', true);
         $this->RegisterPropertyFloat('OpenDoorWindowTemperature', 12);
-        $this->RegisterPropertyBoolean('BoostMode', false);
+        $this->RegisterPropertyBoolean('ReactivateBoostMode', false);
     }
 
     private function CreateProfiles(): void
