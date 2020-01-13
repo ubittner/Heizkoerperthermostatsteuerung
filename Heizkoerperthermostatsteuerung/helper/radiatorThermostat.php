@@ -145,16 +145,18 @@ trait HKTS_radiatorThermostat
         }
         // Check control mode
         $actualMode = $this->ReadPropertyInteger('ThermostatControlMode');
-        if (GetValue($actualMode) == 0) {
-            // Set manual mode
-            $thermostat = $this->ReadPropertyInteger('ThermostatInstance');
-            if ($thermostat != 0 && @IPS_ObjectExists($thermostat)) {
-                $setMode = @HM_WriteValueInteger($thermostat, 'CONTROL_MODE', 1);
-                if (!$setMode) {
-                    $this->LogMessage(__FUNCTION__ . ' Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', KL_ERROR);
-                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', 0);
-                } else {
-                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat wurde auf den manuellen Modus umgestellt.', 0);
+        if ($actualMode != 0 && @IPS_ObjectExists($actualMode)) {
+            if (GetValue($actualMode) == 0) {
+                // Set manual mode
+                $thermostat = $this->ReadPropertyInteger('ThermostatInstance');
+                if ($thermostat != 0 && @IPS_ObjectExists($thermostat)) {
+                    $setMode = @HM_WriteValueInteger($thermostat, 'CONTROL_MODE', 1);
+                    if (!$setMode) {
+                        $this->LogMessage(__FUNCTION__ . ' Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', KL_ERROR);
+                        $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', 0);
+                    } else {
+                        $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat wurde auf den manuellen Modus umgestellt.', 0);
+                    }
                 }
             }
         }
