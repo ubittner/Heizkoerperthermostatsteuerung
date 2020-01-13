@@ -415,8 +415,10 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $id = @IPS_GetLinkIDByName('Wochenplan', $this->InstanceID);
         if ($id !== false) {
             $hide = true;
-            if ($this->ReadPropertyBoolean('EnableWeeklySchedule') && $this->GetValue('AutomaticMode')) {
-                $hide = false;
+            if ($this->ValidateEventPlan()) {
+                if ($this->ReadPropertyBoolean('EnableWeeklySchedule') && $this->GetValue('AutomaticMode')) {
+                    $hide = false;
+                }
             }
             IPS_SetHidden($id, $hide);
         }
