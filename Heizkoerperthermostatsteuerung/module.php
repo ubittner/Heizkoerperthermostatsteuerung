@@ -251,8 +251,9 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyBoolean('EnableBatteryState', true);
 
         // Radiator thermostat
-        $this->RegisterPropertyInteger('ThermostatInstance', 0);
         $this->RegisterPropertyInteger('DeviceType', 0);
+        $this->RegisterPropertyInteger('ThermostatInstance', 0);
+        $this->RegisterPropertyInteger('ThermostatControlMode', 0);
         $this->RegisterPropertyInteger('ThermostatTemperature', 0);
         $this->RegisterPropertyInteger('RoomTemperature', 0);
         $this->RegisterPropertyInteger('BatteryState', 0);
@@ -563,6 +564,69 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                             break;
 
                     }
+                }
+            }
+        }
+        // Thermostat control mode
+        $id = $this->ReadPropertyInteger('ThermostatControlMode');
+        if ($id != 0) {
+            if (!@IPS_ObjectExists($id)) {
+                $this->LogMessage('Konfiguration: Variable Steuerungsmodus ID ungültig!', KL_ERROR);
+                $state = 200;
+            } else {
+                $parent = IPS_GetParent($id);
+                if ($parent == 0) {
+                    $this->LogMessage('Konfiguration: Variable Steuerungsmodus, keine übergeordnete ID gefunden!', KL_ERROR);
+                    $state = 200;
+                } else {
+                    $instance = IPS_GetInstance($parent);
+                    $moduleID = $instance['ModuleInfo']['ModuleID'];
+                    if ($moduleID !== self::HOMEMATIC_DEVICE_GUID) {
+                        $this->LogMessage('Konfiguration: Variable Steuerungsmodus GUID ungültig!', KL_ERROR);
+                        $state = 200;
+                    } else {
+                        // Check channel
+                        $config = json_decode(IPS_GetConfiguration($parent));
+                        $address = strstr($config->Address, ':', false);
+                        switch ($deviceType) {
+                            // HM
+                            case 1:
+                                if ($address != ':4') {
+                                    $this->LogMessage('Konfiguration: Variable Steuerungsmodus Kanal ungültig!', KL_ERROR);
+                                    $state = 200;
+                                }
+                                break;
+
+                            // HmIP
+                            case 2:
+                            case 3:
+                                if ($address != ':1') {
+                                    $this->LogMessage('Konfiguration: Variable Steuerungsmodus Kanal ungültig!', KL_ERROR);
+                                    $state = 200;
+                                }
+                                break;
+
+                        }
+                    }
+                }
+                $ident = IPS_GetObject($id)['ObjectIdent'];
+                switch ($deviceType) {
+                    // HM
+                    case 1:
+                        if ($ident != 'CONTROL_MODE') {
+                            $this->LogMessage('Konfiguration: Variable Steuerungsmodus IDENT ungültig!', KL_ERROR);
+                            $state = 200;
+                        }
+                        break;
+
+                    // HmIP
+                    case 2:
+                    case 3:
+                        if ($ident != 'SET_POINT_MODE') {
+                            $this->LogMessage('Konfiguration: Variable Steuerungsmodus IDENT ungültig!', KL_ERROR);
+                            $state = 200;
+                        }
+                        break;
                 }
             }
         }

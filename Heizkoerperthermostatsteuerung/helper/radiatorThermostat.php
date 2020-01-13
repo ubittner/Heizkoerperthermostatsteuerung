@@ -23,6 +23,12 @@ trait HKTS_radiatorThermostat
             foreach ($children as $child) {
                 $ident = IPS_GetObject($child)['ObjectIdent'];
                 switch ($ident) {
+                    // Control mode
+                    case 'CONTROL_MODE':
+                    case 'SET_POINT_MODE':
+                        IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
+                        break;
+
                     // Thermostat temperature
                     case 'SET_TEMPERATURE':
                     case 'SET_POINT_TEMPERATURE':
@@ -136,6 +142,21 @@ trait HKTS_radiatorThermostat
         // Enter semaphore
         if (!IPS_SemaphoreEnter($this->InstanceID . '.SetThermostatTemperature', 5000)) {
             return;
+        }
+        // Check control mode
+        $actualMode = $this->ReadPropertyInteger('ThermostatControlMode');
+        if (GetValue($actualMode) == 0) {
+            // Set manual mode
+            $thermostat = $this->ReadPropertyInteger('ThermostatInstance');
+            if ($thermostat != 0 && @IPS_ObjectExists($thermostat)) {
+                $setMode = @HM_WriteValueInteger($thermostat, 'CONTROL_MODE', 1);
+                if (!$setMode) {
+                    $this->LogMessage(__FUNCTION__ . ' Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', KL_ERROR);
+                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', 0);
+                } else {
+                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat wurde auf den manuellen Modus umgestellt.', 0);
+                }
+            }
         }
         // Set thermostat temperature
         $setTemperature = @RequestAction($id, $Temperature);

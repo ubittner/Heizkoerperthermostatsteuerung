@@ -15,19 +15,6 @@ trait HKTS_weeklySchedule
     public function ToggleAutomaticMode(bool $State): void
     {
         $this->SetValue('AutomaticMode', $State);
-        // Set thermostat to manual mode
-        if ($State) {
-            $id = $this->ReadPropertyInteger('ThermostatInstance');
-            if ($id != 0 && @IPS_ObjectExists($id)) {
-                $mode = @HM_WriteValueInteger($id, 'CONTROL_MODE', 1);
-                if (!$mode) {
-                    $this->LogMessage(__FUNCTION__ . ' Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', KL_ERROR);
-                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', 0);
-                } else {
-                    $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat wurde auf den manuellen Modus umgestellt.', 0);
-                }
-            }
-        }
         $this->AdjustTemperature();
         // Weekly schedule visibility
         $id = @IPS_GetLinkIDByName('Wochenplan', $this->InstanceID);

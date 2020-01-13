@@ -5,7 +5,8 @@
   "vendor": "NTUB",
   "url": "https://github.com/ubittner/Heizkoerperthermostatsteuerung",
   "aliases": [
-    "Heizkörperthermostatsteuerung"
+    "Heizkörperthermostatsteuerung",
+    "Heizkoerperthermostatsteuerung"
   ],
   "parentRequirements": [],
   "childRequirements": [],

@@ -143,6 +143,15 @@
         },
         {
           "type": "Label",
+          "caption": "\nBitte wählen Sie die Variable für den Steuerungsmodus (HM: Kanal 4 CONTROL_MODE, HmIP: Kanal 1 SET_POINT_MODE) aus:"
+        },
+        {
+          "type": "SelectInstance",
+          "name": "ThermostatControlMode",
+          "caption": "Steuerungsmodus"
+        },
+        {
+          "type": "Label",
           "caption": "\nBitte wählen Sie die Variable  für die Thermostat-Temperatur (HM: Kanal 4 SET_TEMPERATURE, HmIP: Kanal 1 SET_POINT_TEMPERATURE) aus:"
         },
         {
