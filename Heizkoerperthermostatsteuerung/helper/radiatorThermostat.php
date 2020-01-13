@@ -22,22 +22,49 @@ trait HKTS_radiatorThermostat
         if (!empty($children)) {
             foreach ($children as $child) {
                 $ident = IPS_GetObject($child)['ObjectIdent'];
-                switch ($ident) {
-                    // Control mode
-                    case 'CONTROL_MODE':
-                    case 'SET_POINT_MODE':
-                        IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
+                $deviceType = $this->ReadPropertyInteger('DeviceType');
+                switch ($deviceType) {
+                    // HM
+                    case 1:
+                        switch ($ident) {
+                            // Control mode
+                            case 'CONTROL_MODE':
+                                IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
+                                break;
+
+                            // Thermostat temperature
+                            case 'SET_TEMPERATURE':
+                                IPS_SetProperty($this->InstanceID, 'ThermostatTemperature', $child);
+                                break;
+
+                            // Room temperature
+                            case 'ACTUAL_TEMPERATURE':
+                                IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
+                                break;
+
+                        }
                         break;
 
-                    // Thermostat temperature
-                    case 'SET_TEMPERATURE':
-                    case 'SET_POINT_TEMPERATURE':
-                        IPS_SetProperty($this->InstanceID, 'ThermostatTemperature', $child);
-                        break;
+                    // HmIP
+                    case 2:
+                    case 3:
+                        switch ($ident) {
+                            // Control mode
+                            case 'SET_POINT_MODE':
+                                IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
+                                break;
 
-                    // Room temperature
-                    case 'ACTUAL_TEMPERATURE':
-                        IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
+                            // Thermostat temperature
+                            case 'SET_POINT_TEMPERATURE':
+                                IPS_SetProperty($this->InstanceID, 'ThermostatTemperature', $child);
+                                break;
+
+                            // Room temperature
+                            case 'ACTUAL_TEMPERATURE':
+                                IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
+                                break;
+
+                        }
                         break;
 
                 }

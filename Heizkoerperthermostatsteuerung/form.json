@@ -146,7 +146,7 @@
           "caption": "\nBitte wählen Sie die Variable für den Steuerungsmodus (HM: Kanal 4 CONTROL_MODE, HmIP: Kanal 1 SET_POINT_MODE) aus:"
         },
         {
-          "type": "SelectInstance",
+          "type": "SelectVariable",
           "name": "ThermostatControlMode",
           "caption": "Steuerungsmodus"
         },
