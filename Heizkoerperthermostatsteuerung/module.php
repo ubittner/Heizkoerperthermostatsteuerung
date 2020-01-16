@@ -126,7 +126,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     if ($Data[1]) {
                         $this->SendDebug(__FUNCTION__, 'Thermostat-Temperatur hat sich geändert: ' . $Data[0] . '°C', 0);
                         $this->UpdateThermostatTemperature();
-                        if (!$this->GetValue('AutomaticMode')) {
+                        if (!$this->GetValue('AutomaticMode') && !$this->GetValue('DoorWindowState')) {
                             $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
                         }
                     }
