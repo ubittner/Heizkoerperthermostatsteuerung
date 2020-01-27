@@ -12,8 +12,9 @@
  * @license    	CC BY-NC-SA 4.0
  *              https://creativecommons.org/licenses/by-nc-sa/4.0/
  *
- * @version     1.00-1
- * @date:       2020-01-02, 18:00, 1577984400
+ * @version     1.00-2
+ * @date        2020-01-27, 18:00, 1580144400
+ * @review      2020-01-27, 18:00
  *
  * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/
  *
@@ -249,6 +250,9 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyBoolean('EnableRoomTemperature', true);
         $this->RegisterPropertyBoolean('EnableDoorWindowState', true);
         $this->RegisterPropertyBoolean('EnableBatteryState', true);
+        $this->RegisterPropertyBoolean('EnableBoostModeTimer', true);
+        $this->RegisterPropertyBoolean('EnablePartyModeTimer', true);
+        $this->RegisterPropertyBoolean('EnableDoorWindowStateTimer', true);
 
         // Radiator thermostat
         $this->RegisterPropertyInteger('DeviceType', 0);
@@ -381,6 +385,21 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         // Battery state
         $profile = 'HKTS.' . $this->InstanceID . '.BatteryState';
         $this->RegisterVariableBoolean('BatteryState', 'Batteriestatus', $profile, 8);
+
+        // Boost mode timer info
+        $this->RegisterVariableString('BoostModeTimer', 'Boost-Modus Timer', '', 9);
+        $id = $this->GetIDForIdent('BoostModeTimer');
+        IPS_SetIcon($id, 'Clock');
+
+        // Party mode timer info
+        $this->RegisterVariableString('PartyModeTimer', 'Party-Modus Timer', '', 10);
+        $id = $this->GetIDForIdent('PartyModeTimer');
+        IPS_SetIcon($id, 'Clock');
+
+        // Door window state timer info
+        $this->RegisterVariableString('DoorWindowStateTimer', 'Tür- / Fensterstatus Timer', '', 11);
+        $id = $this->GetIDForIdent('DoorWindowStateTimer');
+        IPS_SetIcon($id, 'Clock');
     }
 
     private function CreateLinks(): void
@@ -457,6 +476,21 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $id = $this->GetIDForIdent('BatteryState');
         $use = $this->ReadPropertyBoolean('EnableBatteryState');
         IPS_SetHidden($id, !$use);
+
+        // Boost mode timer info
+        $id = $this->GetIDForIdent('BoostModeTimer');
+        $use = $this->ReadPropertyBoolean('EnableBoostModeTimer');
+        IPS_SetHidden($id, !$use);
+
+        // Party mode timer info
+        $id = $this->GetIDForIdent('PartyModeTimer');
+        $use = $this->ReadPropertyBoolean('EnablePartyModeTimer');
+        IPS_SetHidden($id, !$use);
+
+        // Door windows state timer info
+        $id = $this->GetIDForIdent('DoorWindowStateTimer');
+        $use = $this->ReadPropertyBoolean('EnableDoorWindowStateTimer');
+        IPS_SetHidden($id, !$use);
     }
 
     private function RegisterTimers(): void
@@ -468,9 +502,12 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
     private function DisableTimers(): void
     {
-        $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
         $this->SetTimerInterval('DeactivateBoostMode', 0);
+        $this->SetValue('BoostModeTimer', '-');
         $this->SetTimerInterval('DeactivatePartyMode', 0);
+        $this->SetValue('PartyModeTimer', '-');
+        $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
+        $this->SetValue('DoorWindowStateTimer', '-');
     }
 
     private function UnregisterMessages(): void

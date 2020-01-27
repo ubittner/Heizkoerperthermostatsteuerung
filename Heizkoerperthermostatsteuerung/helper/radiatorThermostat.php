@@ -122,11 +122,16 @@ trait HKTS_radiatorThermostat
         // Activate boost mode
         if ($State) {
             $temperature = $this->ReadPropertyFloat('BoostTemperature');
-            $duration = $this->ReadPropertyInteger('BoostDuration') * 60 * 1000;
-            $this->SetTimerInterval('DeactivateBoostMode', $duration);
-        } // Deactivate boost mode
+            // Duration from minutes to seconds
+            $duration = $this->ReadPropertyInteger('BoostDuration') * 60;
+            $this->SetTimerInterval('DeactivateBoostMode', $duration * 1000);
+            $timestamp = time() + $duration;
+            $this->SetValue('BoostModeTimer', date('d.m.Y, H:i:s', ($timestamp)));
+        }
+        // Deactivate boost mode
         else {
             $this->SetTimerInterval('DeactivateBoostMode', 0);
+            $this->SetValue('BoostModeTimer', '-');
             $temperature = $this->GetValue('SetPointTemperature');
         }
         $this->SetValue('BoostMode', $State);
@@ -145,12 +150,17 @@ trait HKTS_radiatorThermostat
         if ($State) {
             if ($this->GetValue('AutomaticMode')) {
                 $this->SetValue('PartyMode', $State);
+                // Duration from hours to seconds
+                $duration = $this->ReadPropertyInteger('PartyDuration') * 60 * 60;
                 // Set timer interval
-                $this->SetTimerInterval('DeactivatePartyMode', $this->ReadPropertyInteger('PartyDuration') * 60 * 60 * 1000);
+                $this->SetTimerInterval('DeactivatePartyMode', $duration * 1000);
+                $timestamp = time() + $duration;
+                $this->SetValue('PartyModeTimer', date('d.m.Y, H:i:s', ($timestamp)));
             }
         } else {
             $this->SetValue('PartyMode', $State);
             $this->SetTimerInterval('DeactivatePartyMode', 0);
+            $this->SetValue('PartyModeTimer', '-');
             $this->TriggerAction(true);
         }
     }
@@ -158,11 +168,14 @@ trait HKTS_radiatorThermostat
     /**
      * Sets the temperature on the radiator thermostat.
      *
+     * Manual mode, keep radiator mode and only set temperature.
+     * Automatic mode, change radiator to manual mode and set temperature.
+     *
      * @param float $Temperature
      */
     public function SetThermostatTemperature(float $Temperature): void
     {
-        $id = $this->ReadPropertyInteger('ThermostatTemperature');
+        $id = $this->ReadPropertyInteger('ThermostatInstance');
         if ($id == 0 || !@IPS_ObjectExists($id)) {
             return;
         }
@@ -170,14 +183,18 @@ trait HKTS_radiatorThermostat
         if (!IPS_SemaphoreEnter($this->InstanceID . '.SetThermostatTemperature', 5000)) {
             return;
         }
-        // Check control mode
-        $actualMode = $this->ReadPropertyInteger('ThermostatControlMode');
-        if ($actualMode != 0 && @IPS_ObjectExists($actualMode)) {
-            if (GetValue($actualMode) == 0) {
-                // Set manual mode
-                $thermostat = $this->ReadPropertyInteger('ThermostatInstance');
-                if ($thermostat != 0 && @IPS_ObjectExists($thermostat)) {
-                    $setMode = @HM_WriteValueInteger($thermostat, 'CONTROL_MODE', 1);
+        $deviceType = $this->ReadPropertyInteger('DeviceType');
+        // Automatic mode, change radiator to manual mode if necessary
+        $automaticMode = $this->GetValue('AutomaticMode');
+        if ($automaticMode) {
+            $actualMode = $this->ReadPropertyInteger('ThermostatControlMode');
+            if ($actualMode != 0 && @IPS_ObjectExists($actualMode)) {
+                if (GetValue($actualMode) == 0) {
+                    // Set manual mode
+                    $setMode = @HM_WriteValueInteger($id, 'CONTROL_MODE', 1);
+                    IPS_Sleep(250);
+                }
+                if (isset($setMode)) {
                     if (!$setMode) {
                         $this->LogMessage(__FUNCTION__ . ' Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', KL_ERROR);
                         $this->SendDebug(__FUNCTION__, 'Das Heizkörperthermostat konnte nicht auf den manuellen Modus umgestellt werden.', 0);
@@ -188,12 +205,26 @@ trait HKTS_radiatorThermostat
             }
         }
         // Set thermostat temperature
-        $setTemperature = @RequestAction($id, $Temperature);
-        if (!$setTemperature) {
-            $this->LogMessage(__FUNCTION__ . ' Die Temperatur von ' . $Temperature . ' konnte nicht eingestellt werden.', KL_ERROR);
-            $this->SendDebug(__FUNCTION__, 'Die Temperatur von ' . $Temperature . ' konnte nicht eingestellt werden.', 0);
-        } else {
-            $this->SendDebug(__FUNCTION__, 'Die Temperatur von ' . $Temperature . ' °C wurde eingestellt.', 0);
+        switch ($deviceType) {
+            // HM
+            case 1:
+                $setTemperature = @HM_WriteValueFloat($id, 'MANU_MODE', $Temperature);
+                break;
+
+            // HmIP
+            case 2:
+            case 3:
+                $setTemperature = @HM_WriteValueFloat($id, 'SET_POINT_TEMPERATURE', $Temperature);
+                break;
+
+        }
+        if (isset($setTemperature)) {
+            if (!$setTemperature) {
+                $this->LogMessage(__FUNCTION__ . ' Die Temperatur von ' . $Temperature . ' konnte nicht eingestellt werden.', KL_ERROR);
+                $this->SendDebug(__FUNCTION__, 'Die Temperatur von ' . $Temperature . ' konnte nicht eingestellt werden.', 0);
+            } else {
+                $this->SendDebug(__FUNCTION__, 'Die Temperatur von ' . $Temperature . ' °C wurde eingestellt.', 0);
+            }
         }
         // Leave semaphore
         IPS_SemaphoreLeave($this->InstanceID . '.SetThermostatTemperature');

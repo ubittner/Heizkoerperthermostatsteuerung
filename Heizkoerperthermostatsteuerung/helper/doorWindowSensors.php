@@ -11,6 +11,7 @@ trait HKTS_doorWindowSensors
     public function ReviewDoorWindowSensors(): void
     {
         $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
+        $this->SetValue('DoorWindowStateTimer', '-');
         $lastState = $this->GetValue('DoorWindowState');
         $actualState = $this->GetDoorWindowState();
         $this->SetValue('DoorWindowState', $actualState);
@@ -43,10 +44,13 @@ trait HKTS_doorWindowSensors
             if ($delay == 0) {
                 $this->SetValue('DoorWindowState', $actualState);
                 $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
+                $this->SetValue('DoorWindowStateTimer', '-');
                 $this->ExecuteDoorWindowAction($actualState);
             } // Delay
             else {
                 $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);
+                $timestamp = time() + $delay;
+                $this->SetValue('DoorWindowStateTimer', date('d.m.Y, H:i:s', ($timestamp)));
             }
         }
     }
