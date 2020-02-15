@@ -167,11 +167,6 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         }
     }
 
-    protected function KernelReady()
-    {
-        $this->ApplyChanges();
-    }
-
     public function ShowRegisteredMessages(): void
     {
         $kernelMessages = [];
@@ -234,6 +229,11 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 break;
 
         }
+    }
+
+    protected function KernelReady()
+    {
+        $this->ApplyChanges();
     }
 
     //#################### Private
