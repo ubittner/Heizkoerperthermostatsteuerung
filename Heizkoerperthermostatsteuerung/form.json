@@ -384,20 +384,52 @@
           "caption": "Boost-Modus verwenden"
         }
       ]
-    }
-  ],
-  "actions": [
+    },
     {
       "type": "ExpansionPanel",
       "caption": "Registrierte Nachrichten",
       "items": [
         {
-          "type": "Button",
-          "caption": "Registrierte Nachrichten anzeigen",
-          "onClick": "HKTS_ShowRegisteredMessages($id);"
+          "type": "List",
+          "name": "RegisteredMessages",
+          "caption": "Registrierte Nachrichten",
+          "rowCount": 10,
+          "sort": {
+            "column": "MessageDescription",
+            "direction": "ascending"
+          },
+          "columns": [
+            {
+              "caption": "Bezeichnung",
+              "name": "ParentName",
+              "width": "350px"
+            },
+            {
+              "caption": "Sender ID",
+              "name": "SenderID",
+              "width": "150px"
+            },
+            {
+              "caption": "Sender Name",
+              "name": "SenderName",
+              "width": "250px"
+            },
+            {
+              "caption": "Nachrichten ID",
+              "name": "MessageID",
+              "width": "150px"
+            },
+            {
+              "caption": "Nachrichten Bezeichnung",
+              "name": "MessageDescription",
+              "width": "250px"
+            }
+          ]
         }
       ]
-    },
+    }
+  ],
+  "actions": [
     {
       "type": "ExpansionPanel",
       "caption": "Heizkörperthermostat",

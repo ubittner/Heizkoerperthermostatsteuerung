@@ -91,6 +91,8 @@ trait HKTS_doorWindowSensors
      * @return bool
      * false    = closed
      * true     = opened
+     *
+     * @throws Exception
      */
     private function GetDoorWindowState(): bool
     {

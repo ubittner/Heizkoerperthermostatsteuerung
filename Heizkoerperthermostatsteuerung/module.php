@@ -167,44 +167,42 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         }
     }
 
-    public function ShowRegisteredMessages(): void
+    public function GetConfigurationForm()
     {
-        $kernelMessages = [];
-        $eventMessages = [];
-        $variableMessages = [];
-        foreach ($this->GetMessageList() as $id => $registeredMessage) {
-            foreach ($registeredMessage as $messageType) {
-                if ($messageType == IPS_KERNELSTARTED) {
-                    $kernelMessages[] = ['id' => $id];
-                }
-                if ($messageType == EM_UPDATE) {
-                    $eventMessages[] = ['id' => $id, 'name' => IPS_GetName($id)];
-                }
-                if ($messageType == VM_UPDATE) {
-                    $parent = IPS_GetParent($id);
-                    $parentName = '';
-                    if ($parent != 0) {
-                        $parentName = IPS_GetName($parent);
-                    }
-                    $variableMessages[] = ['id' => $id, 'name' => IPS_GetName($id), 'parentName' => $parentName];
-                }
+        $formdata = json_decode(file_get_contents(__DIR__ . '/form.json'));
+        // Registered messages
+        $registeredVariables = $this->GetMessageList();
+        foreach ($registeredVariables as $senderID => $messageID) {
+            $senderName = IPS_GetName($senderID);
+            $parentName = $senderName;
+            $parentID = IPS_GetParent($senderID);
+            if (is_int($parentID) && $parentID != 0 && @IPS_ObjectExists($parentID)) {
+                $parentName = IPS_GetName($parentID);
             }
+            switch ($messageID) {
+                case [10001]:
+                    $messageDescription = 'IPS_KERNELSTARTED';
+                    break;
+
+                case [10603]:
+                    $messageDescription = 'VM_UPDATE';
+                    break;
+
+                case [10803]:
+                    $messageDescription = 'EM_UPDATE';
+                    break;
+
+                default:
+                    $messageDescription = 'keine Bezeichnung';
+            }
+            $formdata->elements[7]->items[0]->values[] = [
+                'ParentName'                                            => $parentName,
+                'SenderID'                                              => $senderID,
+                'SenderName'                                            => $senderName,
+                'MessageID'                                             => $messageID,
+                'MessageDescription'                                    => $messageDescription];
         }
-        echo "IPS_KERNELSTARTED:\n\n";
-        foreach ($kernelMessages as $kernelMessage) {
-            echo $kernelMessage['id'] . "\n\n";
-        }
-        echo "\n\nEM_UPDATE:\n\n";
-        foreach ($eventMessages as $eventMessage) {
-            echo $eventMessage['id'] . "\n";
-            echo $eventMessage['name'] . "\n\n";
-        }
-        echo "\n\nVM_UPDATE:\n\n";
-        foreach ($variableMessages as $variableMessage) {
-            echo $variableMessage['id'] . "\n";
-            echo $variableMessage['name'] . "\n";
-            echo $variableMessage['parentName'] . "\n\n";
-        }
+        return json_encode($formdata);
     }
 
     //#################### Request action

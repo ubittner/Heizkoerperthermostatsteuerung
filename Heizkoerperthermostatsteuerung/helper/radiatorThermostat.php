@@ -100,6 +100,8 @@ trait HKTS_radiatorThermostat
      * Toggles the set point temperature.
      *
      * @param float $Temperature
+     *
+     * @throws Exception
      */
     public function ToggleSetPointTemperature(float $Temperature): void
     {
@@ -113,6 +115,8 @@ trait HKTS_radiatorThermostat
      * @param bool $State
      * false    = boost mode off
      * true     = boost mode on
+     *
+     * @throws Exception
      */
     public function ToggleBoostMode(bool $State): void
     {
@@ -172,6 +176,8 @@ trait HKTS_radiatorThermostat
      * Automatic mode, change radiator to manual mode and set temperature.
      *
      * @param float $Temperature
+     *
+     * @throws Exception
      */
     public function SetThermostatTemperature(float $Temperature): void
     {
