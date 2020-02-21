@@ -14,6 +14,7 @@ trait HKTS_weeklySchedule
      */
     public function ToggleAutomaticMode(bool $State): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $this->SetValue('AutomaticMode', $State);
         $this->AdjustTemperature();
         // Weekly schedule visibility
@@ -32,6 +33,7 @@ trait HKTS_weeklySchedule
      */
     public function ShowActualAction(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $validate = $this->ValidateEventPlan();
         if (!$validate) {
             echo 'Ein Wochenplan ist nicht vorhanden oder der Wochenplan ist inaktiv!';
@@ -60,6 +62,7 @@ trait HKTS_weeklySchedule
      */
     private function ValidateEventPlan(): bool
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $result = false;
         $weeklySchedule = $this->ReadPropertyInteger('WeeklySchedule');
         if ($weeklySchedule != 0 && @IPS_ObjectExists($weeklySchedule)) {
@@ -80,6 +83,7 @@ trait HKTS_weeklySchedule
      */
     private function TriggerAction(bool $SetTemperature): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         if (!$this->ValidateEventPlan()) {
             return;
         }
@@ -119,6 +123,11 @@ trait HKTS_weeklySchedule
             }
             if ($SetTemperature && isset($temperature)) {
                 $this->SetValue('SetPointTemperature', $temperature);
+                // Check chimney state
+                if ($this->GetValue('ChimneyState')) {
+                    $this->SendDebug(__FUNCTION__, 'Abbruch, Der Kamin ist an!', 0);
+                    return;
+                }
                 // Only set temperature if all doors and windows are closed
                 if (!$this->GetValue('DoorWindowState')) {
                     // Boost mode must be off
@@ -149,6 +158,7 @@ trait HKTS_weeklySchedule
      */
     private function DetermineAction(): int
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $actionID = 0;
         if ($this->ValidateEventPlan()) {
             $event = IPS_GetEvent($this->ReadPropertyInteger('WeeklySchedule'));

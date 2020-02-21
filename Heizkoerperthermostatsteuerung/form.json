@@ -26,11 +26,11 @@
         },
         {
           "type": "Label",
-          "caption": "Version:\t\t\t1.00-2"
+          "caption": "Version:\t\t\t1.00-3"
         },
         {
           "type": "Label",
-          "caption": "Datum:\t\t\t27. Januar 2020"
+          "caption": "Datum:\t\t\t21. Februar 2020"
         },
         {
           "type": "Label",
@@ -98,6 +98,11 @@
           "type": "CheckBox",
           "name": "EnableBatteryState",
           "caption": "Batteriestatus"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableChimneyState",
+          "caption": "Kaminstatus"
         },
         {
           "type": "CheckBox",
@@ -382,6 +387,32 @@
           "type": "CheckBox",
           "name": "ReactivateBoostMode",
           "caption": "Boost-Modus verwenden"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Kaminüberwachung",
+      "items": [
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie die Variable für die Kaminüberwachung aus:"
+        },
+        {
+          "type": "SelectVariable",
+          "name": "ChimneyMonitoring",
+          "caption": "Kaminüberwachung"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte geben Sie die Absenktemperatur in °C an:"
+        },
+        {
+          "type": "NumberSpinner",
+          "name": "ChimneySetBackTemperature",
+          "caption": "Absenktemperatur",
+          "digits": 1,
+          "suffix": "°C"
         }
       ]
     },

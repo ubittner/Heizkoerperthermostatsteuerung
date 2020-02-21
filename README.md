@@ -6,7 +6,7 @@ Ein Gemeinschaftsprojekt von Normen Thiel und Ulrich Bittner
 
 [![Version](https://img.shields.io/badge/Symcon_Version-5.2>-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 [![Version](https://img.shields.io/badge/Module_Version-1.00-blue.svg)]()
-[![Version](https://img.shields.io/badge/Module_Build-2-blue.svg)]()
+[![Version](https://img.shields.io/badge/Module_Build-3-blue.svg)]()
 [![Version](https://img.shields.io/badge/Code-PHP-blue.svg)]()  
 [![Check Style](https://github.com/ubittner/Heizkoerperthermostatsteuerung/workflows/Check%20Style/badge.svg)](https://github.com/ubittner/Heizkoerperthermostatsteuerung/actions)
 [![Run Tests](https://github.com/ubittner/Heizkoerperthermostatsteuerung/workflows/Run%20Tests/badge.svg)](https://github.com/ubittner/Heizkoerperthermostatsteuerung/actions)  

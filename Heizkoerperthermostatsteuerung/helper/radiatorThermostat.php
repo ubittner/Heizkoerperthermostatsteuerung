@@ -10,6 +10,7 @@ trait HKTS_radiatorThermostat
      */
     public function DetermineThermostatVariables(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $id = $this->ReadPropertyInteger('ThermostatInstance');
         if ($id == 0 || !@IPS_ObjectExists($id)) {
             return;
@@ -105,6 +106,7 @@ trait HKTS_radiatorThermostat
      */
     public function ToggleSetPointTemperature(float $Temperature): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $this->SetValue('SetPointTemperature', $Temperature);
         $this->SetThermostatTemperature($Temperature);
     }
@@ -120,6 +122,7 @@ trait HKTS_radiatorThermostat
      */
     public function ToggleBoostMode(bool $State): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         if ($State && $this->GetValue('DoorWindowState')) {
             $State = false;
         }
@@ -151,6 +154,7 @@ trait HKTS_radiatorThermostat
      */
     public function TogglePartyMode(bool $State): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         if ($State) {
             if ($this->GetValue('AutomaticMode')) {
                 $this->SetValue('PartyMode', $State);
@@ -181,6 +185,7 @@ trait HKTS_radiatorThermostat
      */
     public function SetThermostatTemperature(float $Temperature): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $id = $this->ReadPropertyInteger('ThermostatInstance');
         if ($id == 0 || !@IPS_ObjectExists($id)) {
             return;
@@ -243,6 +248,7 @@ trait HKTS_radiatorThermostat
      */
     private function AdjustTemperature(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         if ($this->GetValue('AutomaticMode')) {
             $setTemperature = false;
             if ($this->ReadPropertyBoolean('AdjustTemperature')) {
@@ -259,6 +265,7 @@ trait HKTS_radiatorThermostat
      */
     private function UpdateThermostatTemperature(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $name = 'ThermostatTemperature';
         $id = $this->ReadPropertyInteger($name);
         if ($id == 0 || !@IPS_ObjectExists($id)) {
@@ -272,6 +279,7 @@ trait HKTS_radiatorThermostat
      */
     private function UpdateRoomTemperature(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $name = 'RoomTemperature';
         $id = $this->ReadPropertyInteger($name);
         if ($id == 0 || !@IPS_ObjectExists($id)) {
@@ -285,6 +293,7 @@ trait HKTS_radiatorThermostat
      */
     private function UpdateBatteryState(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $name = 'BatteryState';
         $id = $this->ReadPropertyInteger($name);
         if ($id == 0 || !@IPS_ObjectExists($id)) {

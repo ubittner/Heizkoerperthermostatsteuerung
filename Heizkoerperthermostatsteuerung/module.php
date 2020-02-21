@@ -12,9 +12,9 @@
  * @license    	CC BY-NC-SA 4.0
  *              https://creativecommons.org/licenses/by-nc-sa/4.0/
  *
- * @version     1.00-2
- * @date        2020-01-27, 18:00, 1580144400
- * @review      2020-01-27, 18:00
+ * @version     1.00-3
+ * @date        2020-02-21, 18:00, 1582304400
+ * @review      2020-02-21, 18:00
  *
  * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/
  *
@@ -35,6 +35,7 @@ include_once __DIR__ . '/helper/autoload.php';
 class Heizkoerperthermostatsteuerung extends IPSModule
 {
     // Helper
+    use HKTS_chimneyMonitoring;
     use HKTS_doorWindowSensors;
     use HKTS_radiatorThermostat;
     use HKTS_weeklySchedule;
@@ -94,11 +95,8 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->UpdateRoomTemperature();
         $this->UpdateBatteryState();
 
-        // Adjust temperature
-        $this->AdjustTemperature();
-
-        // Check door and window sensors
-        $this->CheckDoorWindowSensors();
+        // Check condition
+        $this->CheckActualCondition();
     }
 
     public function Destroy()
@@ -112,20 +110,27 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
-        $this->SendDebug('MessageSink', 'Message from SenderID ' . $SenderID . ' with Message ' . $Message . "\r\n Data: " . print_r($Data, true), 0);
+        $this->SendDebug(__FUNCTION__, 'SenderID: ' . $SenderID . ', Message: ' . $Message . ', Data: ' . print_r($Data, true), 0);
+        if (!empty($Data)) {
+            foreach ($Data as $key => $value) {
+                $this->SendDebug(__FUNCTION__, 'Data[' . $key . '] = ' . json_encode($value), 0);
+            }
+        }
         switch ($Message) {
             case IPS_KERNELSTARTED:
                 $this->KernelReady();
                 break;
 
-            // $Data[0] = actual value
-            // $Data[1] = difference to last value
-            // $Data[2] = last value
+            /*
+             * $Data[0] = Actual value
+             * $Data[1] = Difference to last value
+             * $Data[2] = Last value
+             */
             case VM_UPDATE:
                 // Thermostat temperature
                 if ($SenderID == $this->ReadPropertyInteger('ThermostatTemperature')) {
                     if ($Data[1]) {
-                        $this->SendDebug(__FUNCTION__, 'Thermostat-Temperatur hat sich geändert: ' . $Data[0] . '°C', 0);
+                        $this->SendDebug(__FUNCTION__, 'Die Thermostat-Temperatur hat sich auf ' . $Data[0] . '°C geändert.', 0);
                         $this->UpdateThermostatTemperature();
                         if (!$this->GetValue('AutomaticMode') && !$this->GetValue('DoorWindowState')) {
                             $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
@@ -135,7 +140,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 // Room temperature
                 if ($SenderID == $this->ReadPropertyInteger('RoomTemperature')) {
                     if ($Data[1]) {
-                        $this->SendDebug(__FUNCTION__, 'Raum-Temperatur hat sich geändert: ' . $Data[0] . '°C', 0);
+                        $this->SendDebug(__FUNCTION__, 'Die Raum-Temperatur hat sich auf ' . $Data[0] . '°C geändert.', 0);
                         $this->UpdateRoomTemperature();
                     }
                 }
@@ -148,11 +153,18 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                         }
                     }
                 }
-
+                // Battery state
                 if ($SenderID == $this->ReadPropertyInteger('BatteryState')) {
                     if ($Data[1]) {
-                        $this->SendDebug(__FUNCTION__, 'Batteriestatus hat sich geändert: ' . $Data[0], 0);
+                        $this->SendDebug(__FUNCTION__, 'Der Batteriestatus hat sich auf den Wert ' . json_encode($Data[0]) . 'geändert.', 0);
                         $this->UpdateBatteryState();
+                    }
+                }
+                // Chimney state
+                if ($SenderID == $this->ReadPropertyInteger('ChimneyMonitoring')) {
+                    if ($Data[1]) {
+                        $this->SendDebug(__FUNCTION__, 'Der Kaminstatus hat sich auf den Wert ' . json_encode($Data[0]) . ' geändert.', 0);
+                        $this->TriggerChimneyMonitoring($Data[0]);
                     }
                 }
                 break;
@@ -195,7 +207,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 default:
                     $messageDescription = 'keine Bezeichnung';
             }
-            $formdata->elements[7]->items[0]->values[] = [
+            $formdata->elements[8]->items[0]->values[] = [
                 'ParentName'                                            => $parentName,
                 'SenderID'                                              => $senderID,
                 'SenderName'                                            => $senderName,
@@ -248,6 +260,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyBoolean('EnableRoomTemperature', true);
         $this->RegisterPropertyBoolean('EnableDoorWindowState', true);
         $this->RegisterPropertyBoolean('EnableBatteryState', true);
+        $this->RegisterPropertyBoolean('EnableChimneyState', true);
         $this->RegisterPropertyBoolean('EnableBoostModeTimer', true);
         $this->RegisterPropertyBoolean('EnablePartyModeTimer', true);
         $this->RegisterPropertyBoolean('EnableDoorWindowStateTimer', true);
@@ -281,6 +294,10 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $this->RegisterPropertyBoolean('ReduceTemperature', true);
         $this->RegisterPropertyFloat('OpenDoorWindowTemperature', 12);
         $this->RegisterPropertyBoolean('ReactivateBoostMode', false);
+
+        // Chimney Monitoring
+        $this->RegisterPropertyInteger('ChimneyMonitoring', 0);
+        $this->RegisterPropertyFloat('ChimneySetBackTemperature', 6.0);
     }
 
     private function CreateProfiles(): void
@@ -334,6 +351,14 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         }
         IPS_SetVariableProfileAssociation($profile, 0, 'OK', 'Battery', 0x00FF00);
         IPS_SetVariableProfileAssociation($profile, 1, 'Batterie schwach', 'Battery', 0xFF0000);
+
+        // Chimney state
+        $profile = 'HKTS.' . $this->InstanceID . '.ChimneyState';
+        if (!IPS_VariableProfileExists($profile)) {
+            IPS_CreateVariableProfile($profile, 0);
+        }
+        IPS_SetVariableProfileAssociation($profile, 0, 'Aus', 'Flame', 0x0000FF);
+        IPS_SetVariableProfileAssociation($profile, 1, 'An', 'Flame', 0xFF0000);
     }
 
     private function DeleteProfiles(): void
@@ -380,22 +405,26 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         $profile = 'HKTS.' . $this->InstanceID . '.DoorWindowState';
         $this->RegisterVariableBoolean('DoorWindowState', 'Tür- / Fensterstatus', $profile, 7);
 
+        // Chimney state
+        $profile = 'HKTS.' . $this->InstanceID . '.ChimneyState';
+        $this->RegisterVariableBoolean('ChimneyState', 'Kaminstatus', $profile, 8);
+
         // Battery state
         $profile = 'HKTS.' . $this->InstanceID . '.BatteryState';
-        $this->RegisterVariableBoolean('BatteryState', 'Batteriestatus', $profile, 8);
+        $this->RegisterVariableBoolean('BatteryState', 'Batteriestatus', $profile, 9);
 
         // Boost mode timer info
-        $this->RegisterVariableString('BoostModeTimer', 'Boost-Modus Timer', '', 9);
+        $this->RegisterVariableString('BoostModeTimer', 'Boost-Modus Timer', '', 10);
         $id = $this->GetIDForIdent('BoostModeTimer');
         IPS_SetIcon($id, 'Clock');
 
         // Party mode timer info
-        $this->RegisterVariableString('PartyModeTimer', 'Party-Modus Timer', '', 10);
+        $this->RegisterVariableString('PartyModeTimer', 'Party-Modus Timer', '', 11);
         $id = $this->GetIDForIdent('PartyModeTimer');
         IPS_SetIcon($id, 'Clock');
 
         // Door window state timer info
-        $this->RegisterVariableString('DoorWindowStateTimer', 'Tür- / Fensterstatus Timer', '', 11);
+        $this->RegisterVariableString('DoorWindowStateTimer', 'Tür- / Fensterstatus Timer', '', 12);
         $id = $this->GetIDForIdent('DoorWindowStateTimer');
         IPS_SetIcon($id, 'Clock');
     }
@@ -473,6 +502,15 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         // Battery state
         $id = $this->GetIDForIdent('BatteryState');
         $use = $this->ReadPropertyBoolean('EnableBatteryState');
+        IPS_SetHidden($id, !$use);
+
+        // Chimney state
+        $id = $this->GetIDForIdent('ChimneyState');
+        $chimneyMonitoring = $this->ReadPropertyInteger('ChimneyMonitoring');
+        $use = false;
+        if ($chimneyMonitoring != 0 && IPS_ObjectExists($chimneyMonitoring)) {
+            $use = $this->ReadPropertyBoolean('EnableChimneyState');
+        }
         IPS_SetHidden($id, !$use);
 
         // Boost mode timer info
@@ -557,6 +595,11 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         }
         // Battery state
         $id = $this->ReadPropertyInteger('BatteryState');
+        if ($id != 0 && IPS_ObjectExists($id)) {
+            $this->RegisterMessage($id, VM_UPDATE);
+        }
+        // Chimney monitoring
+        $id = $this->ReadPropertyInteger('ChimneyMonitoring');
         if ($id != 0 && IPS_ObjectExists($id)) {
             $this->RegisterMessage($id, VM_UPDATE);
         }
@@ -789,5 +832,25 @@ class Heizkoerperthermostatsteuerung extends IPSModule
         }
         // Set state
         $this->SetStatus($state);
+    }
+
+    private function CheckActualCondition(): void
+    {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        // Check chimney
+        $chimneyState = false;
+        $id = $this->ReadPropertyInteger('ChimneyMonitoring');
+        if ($id != 0 && IPS_ObjectExists($id)) {
+            $chimneyState = GetValueBoolean($id);
+        }
+        $this->SetValue('ChimneyState', $chimneyState);
+        if ($chimneyState) {
+            $this->TriggerChimneyMonitoring(true);
+            return;
+        }
+        // Adjust temperature
+        $this->AdjustTemperature();
+        // Check door and window sensors
+        $this->CheckDoorWindowSensors();
     }
 }

@@ -10,6 +10,7 @@ trait HKTS_doorWindowSensors
      */
     public function ReviewDoorWindowSensors(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
         $this->SetValue('DoorWindowStateTimer', '-');
         $lastState = $this->GetValue('DoorWindowState');
@@ -35,6 +36,7 @@ trait HKTS_doorWindowSensors
      */
     private function CheckDoorWindowSensors(): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $lastState = $this->GetValue('DoorWindowState');
         $actualState = $this->GetDoorWindowState();
         $delay = $this->ReadPropertyInteger('ReviewDelay');
@@ -46,7 +48,8 @@ trait HKTS_doorWindowSensors
                 $this->SetTimerInterval('ReviewDoorWindowSensors', 0);
                 $this->SetValue('DoorWindowStateTimer', '-');
                 $this->ExecuteDoorWindowAction($actualState);
-            } // Delay
+            }
+            // Delay
             else {
                 $this->SetTimerInterval('ReviewDoorWindowSensors', $delay * 1000);
                 $timestamp = time() + $delay;
@@ -64,6 +67,12 @@ trait HKTS_doorWindowSensors
      */
     private function ExecuteDoorWindowAction(bool $State): void
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        // Check chimney state
+        if ($this->GetValue('ChimneyState')) {
+            $this->SendDebug(__FUNCTION__, 'Abbruch, Der Kamin ist an!', 0);
+            return;
+        }
         // Opened
         if ($State) {
             // Deactivate boost mode
@@ -75,7 +84,8 @@ trait HKTS_doorWindowSensors
             if ($this->ReadPropertyBoolean('ReduceTemperature')) {
                 $this->SetThermostatTemperature($this->ReadPropertyFloat('OpenDoorWindowTemperature'));
             }
-        } // Closed
+        }
+        // Closed
         else {
             if ($this->ReadPropertyBoolean('ReactivateBoostMode')) {
                 $this->ToggleBoostMode(true);
@@ -96,6 +106,7 @@ trait HKTS_doorWindowSensors
      */
     private function GetDoorWindowState(): bool
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $state = false;
         $sensors = $this->GetDoorWindowSensors();
         if (!empty($sensors)) {
@@ -116,6 +127,7 @@ trait HKTS_doorWindowSensors
      */
     private function GetDoorWindowSensors(): array
     {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         $sensors = [];
         $doorWindowSensors = json_decode($this->ReadPropertyString('DoorWindowSensors'));
         if (!empty($doorWindowSensors)) {
