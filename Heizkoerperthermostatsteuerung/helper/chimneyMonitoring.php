@@ -17,7 +17,7 @@ trait HKTS_chimneyMonitoring
         $this->SendDebug(__FUNCTION__, 'Die Methode wird mit dem Parameter $State = ' . json_encode($State) . ' ausgeführt. (' . microtime(true) . ')', 0);
         $this->SetValue('ChimneyState', $State);
         // Check automatic mode
-        if ($this->GetValue('AutomaticMode')) {
+        if (!$this->GetValue('AutomaticMode')) {
             // Abort
             $this->SendDebug(__FUNCTION__, 'Abbruch, Die Automatik ist ausgeschaltet!', 0);
             return;
