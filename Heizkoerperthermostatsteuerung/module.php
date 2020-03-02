@@ -12,9 +12,9 @@
  * @license    	CC BY-NC-SA 4.0
  *              https://creativecommons.org/licenses/by-nc-sa/4.0/
  *
- * @version     1.00-3
- * @date        2020-02-21, 18:00, 1582304400
- * @review      2020-02-21, 18:00
+ * @version     1.00-4
+ * @date        2020-03-02, 18:00, 1583168400
+ * @review      2020-03-02, 18:00
  *
  * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/
  *
@@ -89,11 +89,6 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
         // Register messages
         $this->RegisterMessages();
-
-        // Update values
-        $this->UpdateThermostatTemperature();
-        $this->UpdateRoomTemperature();
-        $this->UpdateBatteryState();
 
         // Check condition
         $this->CheckActualCondition();
@@ -363,7 +358,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
     private function DeleteProfiles(): void
     {
-        $profiles = ['AutomaticMode', 'SetPointTemperature', 'BoostMode', 'PartyMode', 'DoorWindowState', 'BatteryState'];
+        $profiles = ['AutomaticMode', 'SetPointTemperature', 'BoostMode', 'PartyMode', 'DoorWindowState', 'BatteryState', 'ChimneyState'];
         foreach ($profiles as $profile) {
             $profileName = 'HKTS.' . $this->InstanceID . '.' . $profile;
             if (@IPS_VariableProfileExists($profileName)) {
@@ -837,6 +832,14 @@ class Heizkoerperthermostatsteuerung extends IPSModule
     private function CheckActualCondition(): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        // Update values
+        $this->UpdateThermostatTemperature();
+        $this->UpdateRoomTemperature();
+        $this->UpdateBatteryState();
+        // Check automatic mode
+        if (!$this->GetValue('AutomaticMode')) {
+            return;
+        }
         // Check chimney
         $chimneyState = false;
         $id = $this->ReadPropertyInteger('ChimneyMonitoring');

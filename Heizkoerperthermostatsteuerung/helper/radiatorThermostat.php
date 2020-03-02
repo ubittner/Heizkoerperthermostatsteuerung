@@ -101,7 +101,6 @@ trait HKTS_radiatorThermostat
      * Toggles the set point temperature.
      *
      * @param float $Temperature
-     *
      * @throws Exception
      */
     public function ToggleSetPointTemperature(float $Temperature): void
@@ -124,7 +123,7 @@ trait HKTS_radiatorThermostat
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
         if ($State && $this->GetValue('DoorWindowState')) {
-            $State = false;
+            return;
         }
         // Activate boost mode
         if ($State) {
