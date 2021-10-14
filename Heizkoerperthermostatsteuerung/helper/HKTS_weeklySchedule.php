@@ -20,7 +20,6 @@ trait HKTS_weeklySchedule
         $warning = json_decode('"\u26a0\ufe0f"') . "\tFehler\n\n";
         $validate = $this->ValidateEventPlan();
         if (!$validate) {
-            echo 'Ein Wochenplan ist nicht vorhanden oder der Wochenplan ist inaktiv!';
             echo $warning . "Es ist kein Wochenplan vorhanden \noder der zugewiesene Wochenplan existiert nicht mehr \noder der Wochenplan ist inaktiv!";
             return;
         }
