@@ -2,13 +2,13 @@
   "id": "{5158B7B6-06BA-E8F2-58B9-E79D52AFAC65}",
   "name": "Heizkoerperthermostatsteuerung",
   "type": 3,
-  "vendor": "NTUB",
-  "url": "https://github.com/ubittner/Heizkoerperthermostatsteuerung",
+  "vendor": "Ulrich BIttner",
   "aliases": [
     "Heizkörperthermostatsteuerung"
   ],
+  "url": "https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung",
   "parentRequirements": [],
   "childRequirements": [],
   "implemented": [],
-  "prefix": "HKTS"
+  "prefix": "UBHKTS"
 }

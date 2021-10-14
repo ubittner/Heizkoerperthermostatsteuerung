@@ -2,57 +2,16 @@
   "elements": [
     {
       "type": "ExpansionPanel",
-      "caption": "Instanzinformationen",
+      "caption": "Funktionen",
       "items": [
         {
-          "type": "Image",
-          "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAMJlWElmTU0AKgAAAAgABwESAAMAAAABAAEAAAEaAAUAAAABAAAAYgEbAAUAAAABAAAAagEoAAMAAAABAAIAAAExAAIAAAARAAAAcgEyAAIAAAAUAAAAhIdpAAQAAAABAAAAmAAAAAAAAABIAAAAAQAAAEgAAAABUGl4ZWxtYXRvciAzLjguOAAAMjAxOToxMTowNiAyMToxMToyNwAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAgaADAAQAAAABAAAAHgAAAAA6fHqWAAAACXBIWXMAAAsTAAALEwEAmpwYAAADqWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyI+CiAgICAgICAgIDx0aWZmOlJlc29sdXRpb25Vbml0PjI8L3RpZmY6UmVzb2x1dGlvblVuaXQ+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0aW9uPjcyPC90aWZmOllSZXNvbHV0aW9uPgogICAgICAgICA8dGlmZjpYUmVzb2x1dGlvbj43MjwvdGlmZjpYUmVzb2x1dGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6Q29tcHJlc3Npb24+NTwvdGlmZjpDb21wcmVzc2lvbj4KICAgICAgICAgPGV4aWY6UGl4ZWxZRGltZW5zaW9uPjMwPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6Q29sb3JTcGFjZT4xPC9leGlmOkNvbG9yU3BhY2U+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4xMjk8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPlBpeGVsbWF0b3IgMy44Ljg8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHhtcDpNb2RpZnlEYXRlPjIwMTktMTEtMDZUMjE6MTE6Mjc8L3htcDpNb2RpZnlEYXRlPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KzOjOOwAAA79JREFUaAXtWk2ITlEYvuOn8TOGJhFTxk9kQcrGX5GVBQ1SGCtsMAuxkI2FnbJggaWSjVhIxGxsUGJpkpIiExGZ/MSQzHie+e75Or19955z73fvOd/3dd565rzn3ve873ve93zn705bVKE1KHqBbmBC5VHhf39D4yvgMjBcQ3vwIYq8xaAPCRkFxhzhA+x0AToFH6LIawwGkQ1XA0DZOaGPAPDBB48x4NS/TCTERXWpMBJ88JgHDoJ2kRAX1SnCSPDBYx7K2gSKHIdqI0dgUopzf/HuT/y+DeX0FFn16h+YEVVB2aHxeVjdhzzt2aZIH3zEIU8MbP2sxlRt1mR5qSpRYa6hkDKy/kC0+ZHQ5qqQk3pUXfogmllVi/ShJ6E/yl9V5omDaivLvDHohK88cXxO8Xk8D1mWgwNQ9gQI1BwR+A43+cM9anI3yyDgZc924K1JaXjfUBG4a/ImbU9Qq+0nPNwGPAZm1BIo+NlO6FuRoHM/nr+J3x1CuS/mZTFVPmji+lz4fsPC/2eQUTMAZ4SfQOKeLusgoP3nwB7gDjARKJPmQTlRi6ZpDxeD36jVW5Xl0TpPP7nPSCTb5WA+NGzWtAyAP67VA9vEEbCdCSajjzeBDcCLuL8XUC4H+uN6KMqPwDeYOGth5rUmwxwzf4lkOwioYBZwD1gLfARIXHeWAFtYCVR6BL7CwsmMVnZBvj2tje1yoHT0gOFuU20yeDm0G1CzA9hADRSBBfCl1+RPlplA6VoN5jrA4yIHAXefPDE8BQKVGwFO6zYf235BjienIYCzNTfyiZv4PIMA+qKtwEXgCCsgGtwBnAYClRcBbtB5OjPRQwhsioW+oBwBEq/Psy4Hsd7x4jD+6usT7w6O6QKBb44I1DMI2MMzwF6tq2FvoAWjWdi8y4HqXxuYK8B74BHQitSpdeod+IVaPYnlFbsiruNF3VqWYr/eQcCO8vhxC1gPvARajVZpHeJGOOu3E157J27KNN02bCn2610OlONdYAaAOepBC5Ur0Ze8e52ZaHvOYyys7KfNBLyjVt+ybT4WLYL8fUBfFlIvKeoMzim0H451rKtTl6n5eQgcBPhhhkdiE3GZ5E6eN6yzTcKG93oeDKLV17TfDXB2NtpPGwScxogsxF8N4YL0DakLey77pvcnTx709ka+qOXAaCgING4EOAjGPLg3KmwGHzzmgYOAxzvXJG3Kugt/pE1Zd+2DN/scBDzeuST+6m8Lg8EHz3noQEL4vwFDAKdpJqkM8AJlEOgDJAUfKnf7XvLwH6DaHDNygP4mAAAAAElFTkSuQmCC"
+          "type": "CheckBox",
+          "name": "MaintenanceMode",
+          "caption": "Wartungsmodus"
         },
         {
           "type": "Label",
-          "caption": "Ein Gemeinschaftsprojekt von Normen Thiel und Ulrich Bittner\n"
-        },
-        {
-          "type": "Label",
-          "caption": "Mit dieser Instanz können HomeMatic (HM-CC-RT-DN) und Homematic IP (HmIP-eTRV, HmIP-eTRV-2) Heizkörperthermostate gesteuert werden.\nWeitere Informationen entnehmen Sie bitte der Dokumentation.\n"
-        },
-        {
-          "type": "Label",
-          "caption": "Symcon Version:\t5.2>"
-        },
-        {
-          "type": "Label",
-          "caption": "Name:\t\t\tHeizkoerperthermostatsteuerung"
-        },
-        {
-          "type": "Label",
-          "caption": "Version:\t\t\t1.00-4"
-        },
-        {
-          "type": "Label",
-          "caption": "Datum:\t\t\t02. März 2020"
-        },
-        {
-          "type": "Label",
-          "caption": "Uhrzeit:\t\t\t18:00"
-        },
-        {
-          "type": "Label",
-          "caption": "Entwickler:\t\tUlrich Bittner"
-        },
-        {
-          "type": "Label",
-          "caption": "Präfix:\t\t\tHKTS"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Anzeigeoptionen",
-      "items": [
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie aus, welche Funktionen und Informationen angezeigt werden sollen:"
+          "caption": " "
         },
         {
           "type": "CheckBox",
@@ -127,7 +86,13 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie den Gerätetypen aus:"
+          "caption": "Bitte wählen Sie die Instanz des Heizkörperthermostats aus:\n\nHM-CC-RT-DN\tKanal 4\nHmIP-eTRV\t\tKanal 1\nHmIP-eTRV-2\tKanal 1"
+        },
+        {
+          "type": "SelectInstance",
+          "name": "ThermostatInstance",
+          "caption": "Heizkörperthermostat",
+          "width": "600px"
         },
         {
           "type": "Select",
@@ -154,48 +119,59 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Instanz für das Heizkörperthermostat (HM: Kanal 4, HmIP: Kanal 1) aus:"
-        },
-        {
-          "type": "SelectInstance",
-          "name": "ThermostatInstance",
-          "caption": "Heizkörperthermostat"
+          "caption": " "
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Variable für den Steuerungsmodus (HM: Kanal 4 CONTROL_MODE, HmIP: Kanal 1 SET_POINT_MODE) aus:"
+          "caption": "Bitte wählen Sie die Variable für den Steuerungsmodus aus:\n\nHM-CC-RT-DN\tKanal 4\tCONTROL_MODE\nHmIP-eTRV\t\tKanal 1\tSET_POINT_MODE\nHmIP-eTRV-2\tKanal 1\tSET_POINT_MODE"
         },
         {
           "type": "SelectVariable",
           "name": "ThermostatControlMode",
-          "caption": "Steuerungsmodus"
+          "caption": "Steuerungsmodus",
+          "width": "600px"
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Variable  für die Thermostat-Temperatur (HM: Kanal 4 SET_TEMPERATURE, HmIP: Kanal 1 SET_POINT_TEMPERATURE) aus:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie die Variable für die Thermostat-Temperatur aus:\n\nHM-CC-RT-DN\tKanal 4\tSET_TEMPERATURE\nHmIP-eTRV\t\tKanal 1\tSET_POINT_TEMPERATURE\nHmIP-eTRV-2\tKanal 1\tSET_POINT_TEMPERATURE"
         },
         {
           "type": "SelectVariable",
           "name": "ThermostatTemperature",
-          "caption": "Thermostat-Temperatur"
+          "caption": "Thermostat-Temperatur",
+          "width": "600px"
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Variable für die Raum-Temperatur (HM: Kanal 4 ACTUAL_TEMPERATURE, HmIP: Kanal 1 ACTUAL_TEMPERATURE) aus:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie die Variable für die Raum-Temperatur aus:\n\nHM-CC-RT-DN\tKanal 4\tACTUAL_TEMPERATURE\nHmIP-eTRV\t\tKanal 1\tACTUAL_TEMPERATURE\nHmIP-eTRV-2\tKanal 1\tACTUAL_TEMPERATURE"
         },
         {
           "type": "SelectVariable",
           "name": "RoomTemperature",
-          "caption": "Raum-Temperatur"
+          "caption": "Raum-Temperatur",
+          "width": "600px"
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie die Variable für den Batteriestatus (HM: Kanal 0 LOWBAT, HmIP: Kanal 0 LOW_BAT) aus:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie die Variable für den Batteriestatus aus:\n\nHM-CC-RT-DN\tKanal 0\tLOWBAT\nHmIP-eTRV\t\tKanal 0\tLOW_BAT\nHmIP-eTRV-2\tKanal 0\tLOW_BAT"
         },
         {
           "type": "SelectVariable",
           "name": "BatteryState",
-          "caption": "Batteriestatus"
+          "caption": "Batteriestatus",
+          "width": "600px"
         }
       ]
     },
@@ -205,7 +181,7 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte geben Sie die Temperatur in °C für den Absenkmodus an:"
+          "caption": "Bitte geben Sie die Temperatur für den Absenkmodus an:"
         },
         {
           "type": "NumberSpinner",
@@ -216,7 +192,11 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Temperatur in °C für den Vorwärmmodus an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Temperatur für den Vorwärmmodus an:"
         },
         {
           "type": "NumberSpinner",
@@ -227,7 +207,11 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Temperatur in °C für den Heizmodus an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Temperatur für den Heizmodus an:"
         },
         {
           "type": "NumberSpinner",
@@ -238,7 +222,11 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Temperatur in °C für den Boostmodus an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Temperatur für den Boostmodus an:"
         },
         {
           "type": "NumberSpinner",
@@ -251,27 +239,31 @@
     },
     {
       "type": "ExpansionPanel",
-      "caption": "Modusdauer",
+      "caption": "Boost- und Party-Modus",
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte geben Sie die Dauer in Minuten für den Boost-Modus an:"
+          "caption": "Bitte geben Sie die Dauer für den Boost-Modus an:"
         },
         {
           "type": "NumberSpinner",
           "name": "BoostDuration",
           "caption": "Boost-Modus",
-          "suffix": "min"
+          "suffix": "Minute(n)"
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Dauer in Stunden für den Party-Modus an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Dauer für den Party-Modus an:"
         },
         {
           "type": "NumberSpinner",
           "name": "PartyDuration",
           "caption": "Party-Modus",
-          "suffix": "h"
+          "suffix": "Stunde(n)"
         }
       ]
     },
@@ -286,21 +278,30 @@
         {
           "type": "SelectEvent",
           "name": "WeeklySchedule",
-          "caption": "Wochenplan"
+          "caption": "Wochenplan",
+          "width": "600px"
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Ausführungsverzögerung in Sekunden (0 = deaktiviert) für den Wochenplan an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Ausführungsverzögerung in Sekunden (0 = deaktiviert) für den Wochenplan an:"
         },
         {
           "type": "NumberSpinner",
           "name": "ExecutionDelay",
           "caption": "Ausführungsverzögerung",
-          "suffix": "s"
+          "suffix": "Sekunden"
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie aus, ob bei der Aktivierung der Automatik die Temperatur gemäß Wochenplan direkt angepasst werden soll:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie aus, ob bei der Aktivierung der Automatik die Temperatur gemäß Wochenplan direkt angepasst werden soll:"
         },
         {
           "type": "CheckBox",
@@ -315,12 +316,12 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie die Variablen für die Tür- und Fenstersensoren (HM: Kanal 1 STATE, HmIP: Kanal 1 STATE) aus:"
+          "caption": "Bitte fügen Sie die Tür- und Fenstersensoren hinzu:"
         },
         {
           "type": "List",
           "name": "DoorWindowSensors",
-          "caption": "Tür- und Fenstersensoren",
+          "caption": "Tür- / Fenstersensoren",
           "rowCount": 5,
           "add": true,
           "delete": true,
@@ -341,27 +342,63 @@
             {
               "name": "ID",
               "caption": "Variable",
-              "width": "450px",
+              "width": "auto",
               "add": 0,
               "edit": {
                 "type": "SelectVariable"
+              }
+            },
+            {
+              "name": "Description",
+              "caption": "Bezeichnung",
+              "add": "",
+              "width": "350px",
+              "edit": {
+                "type": "ValidationTextBox"
+              }
+            },
+            {
+              "name": "TriggerValue",
+              "caption": "Auslösender Wert",
+              "add": 1,
+              "width": "160px",
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "0 - false",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - true",
+                    "value": 1
+                  }
+                ]
               }
             }
           ]
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie den Zeitraum in Sekunden (0 = deaktiviert) für eine erneute Überprüfung an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie den Zeitraum (0 = deaktiviert) für eine erneute Überprüfung an:"
         },
         {
           "type": "NumberSpinner",
           "name": "ReviewDelay",
           "caption": "Erneute Überprüfung",
-          "suffix": "s"
+          "suffix": "Sekunde(n)"
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus die Temperatur abgesenkt werden soll:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus die Temperatur abgesenkt werden soll:"
         },
         {
           "type": "CheckBox",
@@ -370,7 +407,11 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Absenktemperatur in °C an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Absenktemperatur an:"
         },
         {
           "type": "NumberSpinner",
@@ -381,7 +422,11 @@
         },
         {
           "type": "Label",
-          "caption": "\nBitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus erneut verwendet werden soll:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus erneut verwendet werden soll:"
         },
         {
           "type": "CheckBox",
@@ -401,11 +446,16 @@
         {
           "type": "SelectVariable",
           "name": "ChimneyMonitoring",
-          "caption": "Kaminüberwachung"
+          "caption": "Kaminüberwachung",
+          "width": "600px"
         },
         {
           "type": "Label",
-          "caption": "\nBitte geben Sie die Absenktemperatur in °C an:"
+          "caption": " "
+        },
+        {
+          "type": "Label",
+          "caption": "Bitte geben Sie die Absenktemperatur an:"
         },
         {
           "type": "NumberSpinner",
@@ -415,52 +465,69 @@
           "suffix": "°C"
         }
       ]
-    },
+    }
+  ],
+  "actions": [
     {
       "type": "ExpansionPanel",
-      "caption": "Registrierte Nachrichten",
+      "caption": "Konfiguration",
       "items": [
         {
-          "type": "List",
-          "name": "RegisteredMessages",
-          "caption": "Registrierte Nachrichten",
-          "rowCount": 10,
-          "sort": {
-            "column": "ParentName",
-            "direction": "ascending"
-          },
-          "columns": [
+          "type": "Button",
+          "caption": "Neu einlesen",
+          "onClick": "UBHKTS_ReloadConfiguration($id);"
+        },
+        {
+          "type": "RowLayout",
+          "items": [
             {
-              "caption": "Bezeichnung",
-              "name": "ParentName",
-              "width": "350px"
+              "type": "SelectCategory",
+              "name": "BackupCategory",
+              "caption": "Kategorie",
+              "width": "600px"
             },
             {
-              "caption": "Sender ID",
-              "name": "SenderID",
-              "width": "150px"
+              "type": "Label",
+              "caption": " "
             },
             {
-              "caption": "Sender Name",
-              "name": "SenderName",
-              "width": "250px"
+              "type": "Button",
+              "caption": "Sichern",
+              "onClick": "UBHKTS_CreateBackup($id, $BackupCategory);"
+            }
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "SelectScript",
+              "name": "ConfigurationScript",
+              "caption": "Konfigurationsskript",
+              "width": "600px"
             },
             {
-              "caption": "Nachrichten ID",
-              "name": "MessageID",
-              "width": "150px"
+              "type": "Label",
+              "caption": " "
             },
             {
-              "caption": "Nachrichten Bezeichnung",
-              "name": "MessageDescription",
-              "width": "250px"
+              "type": "PopupButton",
+              "caption": "Wiederherstellen",
+              "popup": {
+                "caption": "Konfiguration wirklich wiederherstellen?",
+                "items": [
+                  {
+                    "type": "Button",
+                    "caption": "Wiederherstellen",
+                    "onClick": "UBHKTS_RestoreConfiguration($id, $ConfigurationScript);"
+                  }
+                ]
+              }
             }
           ]
         }
       ]
-    }
-  ],
-  "actions": [
+    },
     {
       "type": "ExpansionPanel",
       "caption": "Heizkörperthermostat",
@@ -468,7 +535,7 @@
         {
           "type": "Button",
           "caption": "Variablen automatisch ermitteln",
-          "onClick": "HKTS_DetermineThermostatVariables($id);"
+          "onClick": "UBHKTS_DetermineThermostatVariables($id);"
         }
       ]
     },
@@ -479,7 +546,7 @@
         {
           "type": "Button",
           "caption": "Aktuelle Aktion anzeigen",
-          "onClick": "HKTS_ShowActualAction($id);"
+          "onClick": "UBHKTS_ShowActualAction($id);"
         }
       ]
     },
@@ -491,33 +558,6 @@
           "type": "TestCenter"
         }
       ]
-    }
-  ],
-  "status": [
-    {
-      "code": 101,
-      "icon": "active",
-      "caption": "Heizkoerperthermostatsteuerung wird erstellt"
-    },
-    {
-      "code": 102,
-      "icon": "active",
-      "caption": "Heizkoerperthermostatsteuerung ist aktiv"
-    },
-    {
-      "code": 103,
-      "icon": "active",
-      "caption": "Heizkoerperthermostatsteuerung wird gelöscht"
-    },
-    {
-      "code": 104,
-      "icon": "inactive",
-      "caption": "Heizkoerperthermostatsteuerung ist inaktiv"
-    },
-    {
-      "code": 200,
-      "icon": "inactive",
-      "caption": "Es ist Fehler aufgetreten, weitere Informationen unter Meldungen oder im Log"
     }
   ]
 }

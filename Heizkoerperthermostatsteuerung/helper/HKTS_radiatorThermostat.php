@@ -1,13 +1,18 @@
 <?php
 
-// Declare
+/** @noinspection PhpUnused */
+
+/*
+ * @author      Ulrich Bittner
+ * @copyright   (c) 2021
+ * @license     CC BY-NC-SA 4.0
+ * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung
+ */
+
 declare(strict_types=1);
 
 trait HKTS_radiatorThermostat
 {
-    /**
-     * Determines the necessary variables of the thermostat.
-     */
     public function DetermineThermostatVariables(): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
@@ -25,44 +30,36 @@ trait HKTS_radiatorThermostat
                 $ident = IPS_GetObject($child)['ObjectIdent'];
                 $deviceType = $this->ReadPropertyInteger('DeviceType');
                 switch ($deviceType) {
-                    // HM
-                    case 1:
+                    case 1: # HM-CC-RT-DN, Channel 4
                         switch ($ident) {
-                            // Control mode
-                            case 'CONTROL_MODE':
+                            case 'CONTROL_MODE': # Control mode
                                 IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
                                 break;
 
-                            // Thermostat temperature
-                            case 'SET_TEMPERATURE':
+                            case 'SET_TEMPERATURE': # Thermostat temperature
                                 IPS_SetProperty($this->InstanceID, 'ThermostatTemperature', $child);
                                 break;
 
-                            // Room temperature
-                            case 'ACTUAL_TEMPERATURE':
+                            case 'ACTUAL_TEMPERATURE': # Room temperature
                                 IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
                                 break;
 
                         }
                         break;
 
-                    // HmIP
-                    case 2:
-                    case 3:
+                    case 2: # HmIP-eTRV, Channel 1
+                    case 3: # HmIP-eTRV-2, Channel 1
                         switch ($ident) {
-                            // Control mode
-                            case 'SET_POINT_MODE':
+                            case 'SET_POINT_MODE': # Control mode
                                 IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
                                 break;
 
-                            // Thermostat temperature
-                            case 'SET_POINT_TEMPERATURE':
+                            case 'SET_POINT_TEMPERATURE': # Thermostat temperature
                                 IPS_SetProperty($this->InstanceID, 'ThermostatTemperature', $child);
                                 break;
 
-                            // Room temperature
-                            case 'ACTUAL_TEMPERATURE':
-                                IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
+                            case 'ACTUAL_TEMPERATURE': # Room temperature
+                            IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
                                 break;
 
                         }
@@ -97,35 +94,26 @@ trait HKTS_radiatorThermostat
         echo 'Die Variablen wurden erfolgreich ermittelt!';
     }
 
-    /**
-     * Toggles the set point temperature.
-     *
-     * @param float $Temperature
-     * @throws Exception
-     */
     public function ToggleSetPointTemperature(float $Temperature): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
         $this->SetValue('SetPointTemperature', $Temperature);
         $this->SetThermostatTemperature($Temperature);
     }
 
-    /**
-     * Toggles the boost mode.
-     *
-     * @param bool $State
-     * false    = boost mode off
-     * true     = boost mode on
-     *
-     * @throws Exception
-     */
     public function ToggleBoostMode(bool $State): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
         if ($State && $this->GetValue('DoorWindowState')) {
             return;
         }
-        // Activate boost mode
+        //Activate boost mode
         if ($State) {
             $temperature = $this->ReadPropertyFloat('BoostTemperature');
             // Duration from minutes to seconds
@@ -134,7 +122,7 @@ trait HKTS_radiatorThermostat
             $timestamp = time() + $duration;
             $this->SetValue('BoostModeTimer', date('d.m.Y, H:i:s', ($timestamp)));
         }
-        // Deactivate boost mode
+        //Deactivate boost mode
         else {
             $this->SetTimerInterval('DeactivateBoostMode', 0);
             $this->SetValue('BoostModeTimer', '-');
@@ -144,22 +132,18 @@ trait HKTS_radiatorThermostat
         $this->SetThermostatTemperature($temperature);
     }
 
-    /**
-     * Toggles the party mode.
-     *
-     * @param bool $State
-     * false    = party mode off
-     * true     = party mode on
-     */
     public function TogglePartyMode(bool $State): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
         if ($State) {
             if ($this->GetValue('AutomaticMode')) {
                 $this->SetValue('PartyMode', $State);
-                // Duration from hours to seconds
+                //Duration from hours to seconds
                 $duration = $this->ReadPropertyInteger('PartyDuration') * 60 * 60;
-                // Set timer interval
+                //Set timer interval
                 $this->SetTimerInterval('DeactivatePartyMode', $duration * 1000);
                 $timestamp = time() + $duration;
                 $this->SetValue('PartyModeTimer', date('d.m.Y, H:i:s', ($timestamp)));
@@ -172,35 +156,28 @@ trait HKTS_radiatorThermostat
         }
     }
 
-    /**
-     * Sets the temperature on the radiator thermostat.
-     *
-     * Manual mode, keep radiator mode and only set temperature.
-     * Automatic mode, change radiator to manual mode and set temperature.
-     *
-     * @param float $Temperature
-     *
-     * @throws Exception
-     */
     public function SetThermostatTemperature(float $Temperature): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
         $id = $this->ReadPropertyInteger('ThermostatInstance');
         if ($id == 0 || !@IPS_ObjectExists($id)) {
             return;
         }
-        // Enter semaphore
+        //Enter semaphore
         if (!IPS_SemaphoreEnter($this->InstanceID . '.SetThermostatTemperature', 5000)) {
             return;
         }
         $deviceType = $this->ReadPropertyInteger('DeviceType');
-        // Automatic mode, change radiator to manual mode if necessary
+        //Automatic mode, change radiator to manual mode if necessary
         $automaticMode = $this->GetValue('AutomaticMode');
         if ($automaticMode) {
             $actualMode = $this->ReadPropertyInteger('ThermostatControlMode');
             if ($actualMode != 0 && @IPS_ObjectExists($actualMode)) {
                 if (GetValue($actualMode) == 0) {
-                    // Set manual mode
+                    //Automatic mode, change to manual mode
                     $setMode = @HM_WriteValueInteger($id, 'CONTROL_MODE', 1);
                     IPS_Sleep(250);
                 }
@@ -214,16 +191,14 @@ trait HKTS_radiatorThermostat
                 }
             }
         }
-        // Set thermostat temperature
+        //Set thermostat temperature
         switch ($deviceType) {
-            // HM
-            case 1:
+            case 1: # HM-CC-RT-DN, Channel 4
                 $setTemperature = @HM_WriteValueFloat($id, 'MANU_MODE', $Temperature);
                 break;
 
-            // HmIP
-            case 2:
-            case 3:
+            case 2: # HmIP-eTRV, Channel 1
+            case 3: # HmIP-eTRV-2, Channel 1
                 $setTemperature = @HM_WriteValueFloat($id, 'SET_POINT_TEMPERATURE', $Temperature);
                 break;
 
@@ -236,18 +211,60 @@ trait HKTS_radiatorThermostat
                 $this->SendDebug(__FUNCTION__, 'Die Temperatur von ' . $Temperature . ' °C wurde eingestellt.', 0);
             }
         }
-        // Leave semaphore
+        //Leave semaphore
         IPS_SemaphoreLeave($this->InstanceID . '.SetThermostatTemperature');
     }
 
-    //#################### Private
+    public function UpdateThermostatTemperature(): void
+    {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
+        $id = $this->ReadPropertyInteger('ThermostatTemperature');
+        if ($id == 0 || !@IPS_ObjectExists($id)) {
+            return;
+        }
+        $this->SetValue('ThermostatTemperature', GetValue($this->ReadPropertyInteger('ThermostatTemperature')));
+        if (!$this->GetValue('AutomaticMode') && !$this->GetValue('DoorWindowState')) {
+            $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
+        }
+    }
 
-    /**
-     * Adjusts the temperature.
-     */
+    public function UpdateRoomTemperature(): void
+    {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
+        $id = $this->ReadPropertyInteger('RoomTemperature');
+        if ($id == 0 || !@IPS_ObjectExists($id)) {
+            return;
+        }
+        $this->SetValue('RoomTemperature', GetValue($this->ReadPropertyInteger('RoomTemperature')));
+    }
+
+    public function UpdateBatteryState(): void
+    {
+        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
+        $id = $this->ReadPropertyInteger('BatteryState');
+        if ($id == 0 || !@IPS_ObjectExists($id)) {
+            return;
+        }
+        $this->SetValue('BatteryState', GetValue($this->ReadPropertyInteger('BatteryState')));
+    }
+
+    #################### Private
+
     private function AdjustTemperature(): void
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
         if ($this->GetValue('AutomaticMode')) {
             $setTemperature = false;
             if ($this->ReadPropertyBoolean('AdjustTemperature')) {
@@ -257,47 +274,5 @@ trait HKTS_radiatorThermostat
         } else {
             $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
         }
-    }
-
-    /**
-     * Updates the thermostat temperature.
-     */
-    private function UpdateThermostatTemperature(): void
-    {
-        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
-        $name = 'ThermostatTemperature';
-        $id = $this->ReadPropertyInteger($name);
-        if ($id == 0 || !@IPS_ObjectExists($id)) {
-            return;
-        }
-        $this->SetValue($name, GetValue($this->ReadPropertyInteger($name)));
-    }
-
-    /**
-     * Updates the room temperature.
-     */
-    private function UpdateRoomTemperature(): void
-    {
-        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
-        $name = 'RoomTemperature';
-        $id = $this->ReadPropertyInteger($name);
-        if ($id == 0 || !@IPS_ObjectExists($id)) {
-            return;
-        }
-        $this->SetValue($name, GetValue($this->ReadPropertyInteger($name)));
-    }
-
-    /**
-     * Updates the battery state.
-     */
-    private function UpdateBatteryState(): void
-    {
-        $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
-        $name = 'BatteryState';
-        $id = $this->ReadPropertyInteger($name);
-        if ($id == 0 || !@IPS_ObjectExists($id)) {
-            return;
-        }
-        $this->SetValue($name, GetValue($this->ReadPropertyInteger($name)));
     }
 }
