@@ -335,7 +335,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
 
         #################### Misc
 
-        if (!$this->CheckMaintenanceMode()) {
+        if ($this->CheckMaintenanceMode()) {
             return;
         }
 
