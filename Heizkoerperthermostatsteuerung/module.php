@@ -430,7 +430,7 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                     if ($Data[1]) {
                         $this->SendDebug(__FUNCTION__, 'Der Kaminstatus hat sich auf den Wert ' . json_encode($Data[0]) . ' geändert.', 0);
                         //$this->TriggerChimneyMonitoring($Data[0]);
-                        $scriptText = self::MODULE_PREFIX . '_TriggerChimneyMonitoring(' . $this->InstanceID . ', $Data[0]);';
+                        $scriptText = self::MODULE_PREFIX . '_TriggerChimneyMonitoring(' . $this->InstanceID . ', ' . json_encode($Data[0]) .');';
                         IPS_RunScriptText($scriptText);
                     }
                 }
