@@ -113,6 +113,7 @@ trait HKTS_radiatorThermostat
         if ($State && $this->GetValue('DoorWindowState')) {
             return;
         }
+        $this->SetValue('BoostMode', $State);
         //Activate boost mode
         if ($State) {
             $temperature = $this->ReadPropertyFloat('BoostTemperature');
@@ -128,7 +129,6 @@ trait HKTS_radiatorThermostat
             $this->SetValue('BoostModeTimer', '-');
             $temperature = $this->GetValue('SetPointTemperature');
         }
-        $this->SetValue('BoostMode', $State);
         $this->SetThermostatTemperature($temperature);
     }
 
@@ -140,7 +140,7 @@ trait HKTS_radiatorThermostat
         }
         if ($State) {
             if ($this->GetValue('AutomaticMode')) {
-                $this->SetValue('PartyMode', $State);
+                $this->SetValue('PartyMode', true);
                 //Duration from hours to seconds
                 $duration = $this->ReadPropertyInteger('PartyDuration') * 60 * 60;
                 //Set timer interval
@@ -149,7 +149,7 @@ trait HKTS_radiatorThermostat
                 $this->SetValue('PartyModeTimer', date('d.m.Y, H:i:s', ($timestamp)));
             }
         } else {
-            $this->SetValue('PartyMode', $State);
+            $this->SetValue('PartyMode', false);
             $this->SetTimerInterval('DeactivatePartyMode', 0);
             $this->SetValue('PartyModeTimer', '-');
             $this->TriggerAction(true);
@@ -226,7 +226,10 @@ trait HKTS_radiatorThermostat
             return;
         }
         $this->SetValue('ThermostatTemperature', GetValue($this->ReadPropertyInteger('ThermostatTemperature')));
-        if (!$this->GetValue('AutomaticMode') && !$this->GetValue('DoorWindowState')) {
+        if (!$this->GetValue('AutomaticMode')) {
+            if ($this->GetValue('BoostMode') || $this->GetValue('PartyMode') || $this->GetValue('DoorWindowState')) {
+                return;
+            }
             $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
         }
     }
