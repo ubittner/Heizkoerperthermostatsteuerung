@@ -1,15 +1,18 @@
 <?php
 
-/*
- * @author      Ulrich Bittner
- * @copyright   (c) 2021
- * @license     CC BY-NC-SA 4.0
- * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung
+/**
+ * @project       Heizkoerperthermostatsteuerung/Heizkoerperthermostatsteuerung
+ * @file          HKTS_ChimneyMonitoring.php
+ * @author        Ulrich Bittner
+ * @copyright     2022 Ulrich Bittner
+ * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
+
+/** @noinspection PhpUnhandledExceptionInspection */
 
 declare(strict_types=1);
 
-trait HKTS_chimneyMonitoring
+trait HKTS_ChimneyMonitoring
 {
     public function TriggerChimneyMonitoring(bool $State): void
     {

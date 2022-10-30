@@ -1,18 +1,19 @@
 <?php
 
-/** @noinspection PhpUnusedPrivateMethodInspection */
-/** @noinspection PhpUnused */
-
-/*
- * @author      Ulrich Bittner
- * @copyright   (c) 2021
- * @license     CC BY-NC-SA 4.0
- * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung
+/**
+ * @project       Heizkoerperthermostatsteuerung/Heizkoerperthermostatsteuerung
+ * @file          HKTS_WeeklySchedule.php
+ * @author        Ulrich Bittner
+ * @copyright     2022 Ulrich Bittner
+ * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
+
+/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
-trait HKTS_weeklySchedule
+trait HKTS_WeeklySchedule
 {
     public function ShowActualAction(): void
     {

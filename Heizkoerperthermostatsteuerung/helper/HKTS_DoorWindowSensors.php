@@ -1,17 +1,19 @@
 <?php
 
-/** @noinspection PhpUnused */
-
-/*
- * @author      Ulrich Bittner
- * @copyright   (c) 2021
- * @license     CC BY-NC-SA 4.0
- * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung
+/**
+ * @project       Heizkoerperthermostatsteuerung/Heizkoerperthermostatsteuerung
+ * @file          HKTS_DoorWindowSensors.php
+ * @author        Ulrich Bittner
+ * @copyright     2022 Ulrich Bittner
+ * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
+
+/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
-trait HKTS_doorWindowSensors
+trait HKTS_DoorWindowSensors
 {
     public function CheckDoorWindowSensors(): void
     {
@@ -102,10 +104,10 @@ trait HKTS_doorWindowSensors
     private function GetDoorWindowState(): bool
     {
         $this->SendDebug(__FUNCTION__, 'Die Methode wird ausgeführt. (' . microtime(true) . ')', 0);
-        $state = false;
         if ($this->CheckMaintenanceMode()) {
-            return $state;
+            return false;
         }
+        $state = false;
         foreach (json_decode($this->ReadPropertyString('DoorWindowSensors')) as $sensor) {
             if ($sensor->UseSensor) {
                 $id = $sensor->ID;

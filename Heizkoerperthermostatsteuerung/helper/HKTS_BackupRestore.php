@@ -1,17 +1,18 @@
 <?php
 
-/** @noinspection PhpUnused */
-
-/*
- * @author      Ulrich Bittner
- * @copyright   (c) 2021
- * @license     CC BY-NC-SA 4.0
- * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung
+/**
+ * @project       Heizkoerperthermostatsteuerung/Heizkoerperthermostatsteuerung
+ * @file          HKTS_BackupRestore.php
+ * @author        Ulrich Bittner
+ * @copyright     2022 Ulrich Bittner
+ * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
+
+/** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
-trait HKTS_backupRestore
+trait HKTS_BackupRestore
 {
     public function CreateBackup(int $BackupCategory): void
     {

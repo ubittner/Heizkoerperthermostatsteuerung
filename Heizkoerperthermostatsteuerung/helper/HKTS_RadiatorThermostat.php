@@ -1,17 +1,19 @@
 <?php
 
-/** @noinspection PhpUnused */
-
-/*
- * @author      Ulrich Bittner
- * @copyright   (c) 2021
- * @license     CC BY-NC-SA 4.0
- * @see         https://github.com/ubittner/Heizkoerperthermostatsteuerung/tree/master/Heizkoerperthermostatsteuerung
+/**
+ * @project       Heizkoerperthermostatsteuerung/Heizkoerperthermostatsteuerung
+ * @file          HKTS_RadiatorThermostat.php
+ * @author        Ulrich Bittner
+ * @copyright     2022 Ulrich Bittner
+ * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
+
+/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
-trait HKTS_radiatorThermostat
+trait HKTS_RadiatorThermostat
 {
     public function DetermineThermostatVariables(): void
     {
@@ -49,6 +51,7 @@ trait HKTS_radiatorThermostat
 
                     case 2: # HmIP-eTRV, Channel 1
                     case 3: # HmIP-eTRV-2, Channel 1
+                    case 4: # HmIP-eTRV-E
                         switch ($ident) {
                             case 'SET_POINT_MODE': # Control mode
                                 IPS_SetProperty($this->InstanceID, 'ThermostatControlMode', $child);
@@ -59,7 +62,7 @@ trait HKTS_radiatorThermostat
                                 break;
 
                             case 'ACTUAL_TEMPERATURE': # Room temperature
-                            IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
+                                IPS_SetProperty($this->InstanceID, 'RoomTemperature', $child);
                                 break;
 
                         }
@@ -122,8 +125,7 @@ trait HKTS_radiatorThermostat
             $this->SetTimerInterval('DeactivateBoostMode', $duration * 1000);
             $timestamp = time() + $duration;
             $this->SetValue('BoostModeTimer', date('d.m.Y, H:i:s', ($timestamp)));
-        }
-        //Deactivate boost mode
+        } //Deactivate boost mode
         else {
             $this->SetTimerInterval('DeactivateBoostMode', 0);
             $this->SetValue('BoostModeTimer', '-');
@@ -167,9 +169,13 @@ trait HKTS_radiatorThermostat
             return;
         }
         //Enter semaphore
-        if (!IPS_SemaphoreEnter($this->InstanceID . '.SetThermostatTemperature', 5000)) {
+        if (!$this->LockSemaphore('SetThermostatTemperature')) {
+            $this->SendDebug(__FUNCTION__, 'Abbruch, das Semaphore wurde erreicht!', 0);
+            $this->LogMessage('ID ' . $this->InstanceID . ', ' . __FUNCTION__ . ', das Semaphore wurde erreicht!', KL_WARNING);
+            $this->UnlockSemaphore('SetThermostatTemperature');
             return;
         }
+        $commandControl = $this->ReadPropertyInteger('CommandControl');
         $deviceType = $this->ReadPropertyInteger('DeviceType');
         //Automatic mode, change radiator to manual mode if necessary
         $automaticMode = $this->GetValue('AutomaticMode');
@@ -177,9 +183,19 @@ trait HKTS_radiatorThermostat
             $actualMode = $this->ReadPropertyInteger('ThermostatControlMode');
             if ($actualMode != 0 && @IPS_ObjectExists($actualMode)) {
                 if (GetValue($actualMode) == 0) {
-                    //Automatic mode, change to manual mode
-                    $setMode = @HM_WriteValueInteger($id, 'CONTROL_MODE', 1);
-                    IPS_Sleep(250);
+                    //Command control
+                    if ($commandControl > 1 && @IPS_ObjectExists($commandControl)) { //0 = main category, 1 = none
+                        $commands = [];
+                        $commands[] = '@HM_WriteValueInteger(' . $id . ', "CONTROL_MODE", 1);';
+                        $this->SendDebug(__FUNCTION__, 'Befehl: ' . json_encode(json_encode($commands)), 0);
+                        $scriptText = self::ABLAUFSTEUERUNG_MODULE_PREFIX . '_ExecuteCommands(' . $commandControl . ', ' . json_encode(json_encode($commands)) . ');';
+                        $this->SendDebug(__FUNCTION__, 'Ablaufsteuerung: ' . $scriptText, 0);
+                        @IPS_RunScriptText($scriptText);
+                    } else {
+                        //Automatic mode, change to manual mode
+                        $setMode = @HM_WriteValueInteger($id, 'CONTROL_MODE', 1);
+                        IPS_Sleep(250);
+                    }
                 }
                 if (isset($setMode)) {
                     if (!$setMode) {
@@ -194,12 +210,33 @@ trait HKTS_radiatorThermostat
         //Set thermostat temperature
         switch ($deviceType) {
             case 1: # HM-CC-RT-DN, Channel 4
-                $setTemperature = @HM_WriteValueFloat($id, 'MANU_MODE', $Temperature);
+                //Command control
+                if ($commandControl > 1 && @IPS_ObjectExists($commandControl)) { //0 = main category, 1 = none
+                    $commands = [];
+                    $commands[] = '@HM_WriteValueFloat(' . $id . ", 'MANU_MODE', '" . $Temperature . "');";
+                    $this->SendDebug(__FUNCTION__, 'Befehl: ' . json_encode(json_encode($commands)), 0);
+                    $scriptText = self::ABLAUFSTEUERUNG_MODULE_PREFIX . '_ExecuteCommands(' . $commandControl . ', ' . json_encode(json_encode($commands)) . ');';
+                    $this->SendDebug(__FUNCTION__, 'Ablaufsteuerung: ' . $scriptText, 0);
+                    @IPS_RunScriptText($scriptText);
+                } else {
+                    $setTemperature = @HM_WriteValueFloat($id, 'MANU_MODE', $Temperature);
+                }
                 break;
 
             case 2: # HmIP-eTRV, Channel 1
             case 3: # HmIP-eTRV-2, Channel 1
-                $setTemperature = @HM_WriteValueFloat($id, 'SET_POINT_TEMPERATURE', $Temperature);
+            case 4: # HmIP-eTRV-E, Channel 1
+                //Command control
+                if ($commandControl > 1 && @IPS_ObjectExists($commandControl)) { //0 = main category, 1 = none
+                    $commands = [];
+                    $commands[] = '@HM_WriteValueFloat(' . $id . ", 'SET_POINT_TEMPERATURE', '" . $Temperature . "');";
+                    $this->SendDebug(__FUNCTION__, 'Befehl: ' . json_encode(json_encode($commands)), 0);
+                    $scriptText = self::ABLAUFSTEUERUNG_MODULE_PREFIX . '_ExecuteCommands(' . $commandControl . ', ' . json_encode(json_encode($commands)) . ');';
+                    $this->SendDebug(__FUNCTION__, 'Ablaufsteuerung: ' . $scriptText, 0);
+                    @IPS_RunScriptText($scriptText);
+                } else {
+                    $setTemperature = @HM_WriteValueFloat($id, 'SET_POINT_TEMPERATURE', $Temperature);
+                }
                 break;
 
         }
@@ -212,7 +249,7 @@ trait HKTS_radiatorThermostat
             }
         }
         //Leave semaphore
-        IPS_SemaphoreLeave($this->InstanceID . '.SetThermostatTemperature');
+        $this->UnlockSemaphore('SetThermostatTemperature');
     }
 
     public function UpdateThermostatTemperature(): void
@@ -277,5 +314,38 @@ trait HKTS_radiatorThermostat
         } else {
             $this->SetValue('SetPointTemperature', $this->GetValue('ThermostatTemperature'));
         }
+    }
+
+    /**
+     * Attempts to set the semaphore and repeats this up to multiple times.
+     *
+     * @param $Name
+     * @return bool
+     * @throws Exception
+     */
+    private function LockSemaphore($Name): bool
+    {
+        $attempts = 1000;
+        for ($i = 0; $i < $attempts; $i++) {
+            if (IPS_SemaphoreEnter(__CLASS__ . '.' . $this->InstanceID . '.' . $Name, 1)) {
+                $this->SendDebug(__FUNCTION__, 'Semaphore ' . $Name . ' locked', 0);
+                return true;
+            } else {
+                IPS_Sleep(mt_rand(1, 5));
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Leaves the semaphore.
+     *
+     * @param $Name
+     * @return void
+     */
+    private function UnlockSemaphore($Name): void
+    {
+        @IPS_SemaphoreLeave(__CLASS__ . '.' . $this->InstanceID . '.' . $Name);
+        $this->SendDebug(__FUNCTION__, 'Semaphore ' . $Name . ' unlocked', 0);
     }
 }

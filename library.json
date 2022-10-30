@@ -1,12 +1,12 @@
 {
-  "id": "{7EF35A5D-430D-6D3A-82D7-59F0C56C3A56}",
-  "author": "Ulrich Bittner",
-  "name": "Heizkoerperthermostatsteuerung",
-  "url": "https://github.com/ubittner/Heizkoerperthermostatsteuerung",
-  "compatibility": {
-    "version": "5.5"
-  },
-  "version": "2.0",
-  "build": 43,
-  "date": 1639466615
+    "id": "{7EF35A5D-430D-6D3A-82D7-59F0C56C3A56}",
+    "author": "Ulrich Bittner",
+    "name": "Heizkoerperthermostatsteuerung",
+    "url": "https://github.com/ubittner/Heizkoerperthermostatsteuerung",
+    "compatibility": {
+        "version": "6.1"
+    },
+    "version": "2.0",
+    "build": 44,
+    "date": 1667120217
 }

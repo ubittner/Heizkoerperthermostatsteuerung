@@ -1,563 +1,572 @@
 {
-  "elements": [
-    {
-      "type": "ExpansionPanel",
-      "caption": "Funktionen",
-      "items": [
+    "elements": [
         {
-          "type": "CheckBox",
-          "name": "MaintenanceMode",
-          "caption": "Wartungsmodus"
+            "type": "ExpansionPanel",
+            "caption": "Info",
+            "items": []
         },
         {
-          "type": "Label",
-          "caption": " "
+            "type": "ExpansionPanel",
+            "caption": "Funktionen",
+            "items": [
+                {
+                    "type": "CheckBox",
+                    "name": "MaintenanceMode",
+                    "caption": "Wartungsmodus"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableAutomaticMode",
+                    "caption": "Automatik"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableWeeklySchedule",
+                    "caption": "Wochenplan"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableSetPointTemperature",
+                    "caption": "Soll-Temperatur"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableBoostMode",
+                    "caption": "Boost-Modus"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnablePartyMode",
+                    "caption": "Party-Modus"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableThermostatTemperature",
+                    "caption": "Thermostat-Temperatur"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableRoomTemperature",
+                    "caption": "Raum-Temperatur"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableDoorWindowState",
+                    "caption": "Tür- / Fensterstatus"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableBatteryState",
+                    "caption": "Batteriestatus"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableChimneyState",
+                    "caption": "Kaminstatus"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableBoostModeTimer",
+                    "caption": "Boost-Modus Timer"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnablePartyModeTimer",
+                    "caption": "Party-Modus Timer"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "EnableDoorWindowStateTimer",
+                    "caption": "Tür- / Fensterstatus Timer"
+                }
+            ]
         },
         {
-          "type": "CheckBox",
-          "name": "EnableAutomaticMode",
-          "caption": "Automatik"
+            "type": "ExpansionPanel",
+            "caption": "Heizkörperthermostat",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie den Gerätetyp und die Instanz des Heizkörperthermostats aus:\n\nHM-CC-RT-DN\tKanal 4\nHmIP-eTRV\t\tKanal 1\nHmIP-eTRV-2\tKanal 1\nHmIP-eTRV-E\tKanal 1"
+                },
+                {
+                    "type": "Select",
+                    "name": "DeviceType",
+                    "caption": "Gerätetyp",
+                    "options": [
+                        {
+                            "caption": "Bitte auswählen",
+                            "value": 0
+                        },
+                        {
+                            "caption": "HM-CC-RT-DN",
+                            "value": 1
+                        },
+                        {
+                            "caption": "HmIP-eTRV",
+                            "value": 2
+                        },
+                        {
+                            "caption": "HmIP-eTRV-2",
+                            "value": 3
+                        },
+                        {
+                            "caption": "HmIP-eTRV-E",
+                            "value": 4
+                        }
+                    ]
+                },
+                {
+                    "type": "SelectInstance",
+                    "name": "ThermostatInstance",
+                    "caption": "Heizkörperthermostat",
+                    "width": "600px"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie die Variable für den Steuerungsmodus aus:\n\nHM-CC-RT-DN\tKanal 4\tCONTROL_MODE\nHmIP-eTRV\t\tKanal 1\tSET_POINT_MODE\nHmIP-eTRV-2\tKanal 1\tSET_POINT_MODE\nHmIP-eTRV-E\tKanal 1\tSET_POINT_MODE"
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "ThermostatControlMode",
+                    "caption": "Steuerungsmodus",
+                    "width": "600px"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie die Variable für die Thermostat-Temperatur aus:\n\nHM-CC-RT-DN\tKanal 4\tSET_TEMPERATURE\nHmIP-eTRV\t\tKanal 1\tSET_POINT_TEMPERATURE\nHmIP-eTRV-2\tKanal 1\tSET_POINT_TEMPERATURE\nHmIP-eTRV-E\tKanal 1\tSET_POINT_TEMPERATURE"
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "ThermostatTemperature",
+                    "caption": "Thermostat-Temperatur",
+                    "width": "600px"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie die Variable für die Raum-Temperatur aus:\n\nHM-CC-RT-DN\tKanal 4\tACTUAL_TEMPERATURE\nHmIP-eTRV\t\tKanal 1\tACTUAL_TEMPERATURE\nHmIP-eTRV-2\tKanal 1\tACTUAL_TEMPERATURE\nHmIP-eTRV-E\tKanal 1\tACTUAL_TEMPERATURE"
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "RoomTemperature",
+                    "caption": "Raum-Temperatur",
+                    "width": "600px"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie die Variable für den Batteriestatus aus:\n\nHM-CC-RT-DN\tKanal 0\tLOWBAT\nHmIP-eTRV\t\tKanal 0\tLOW_BAT\nHmIP-eTRV-2\tKanal 0\tLOW_BAT\nHmIP-eTRV-E\tKanal 0\tLOW_BAT"
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "BatteryState",
+                    "caption": "Batteriestatus",
+                    "width": "600px"
+                }
+            ]
         },
         {
-          "type": "CheckBox",
-          "name": "EnableWeeklySchedule",
-          "caption": "Wochenplan"
+            "type": "ExpansionPanel",
+            "caption": "Temperaturen",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Temperatur für den Absenkmodus an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "SetBackTemperature",
+                    "caption": "Absenkmodus",
+                    "digits": 1,
+                    "suffix": "°C"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Temperatur für den Vorwärmmodus an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "PreHeatingTemperature",
+                    "caption": "Vorwärmmodus",
+                    "digits": 1,
+                    "suffix": "°C"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Temperatur für den Heizmodus an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "HeatingTemperature",
+                    "caption": "Heizmodus",
+                    "digits": 1,
+                    "suffix": "°C"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Temperatur für den Boostmodus an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "BoostTemperature",
+                    "caption": "Boostmodus",
+                    "digits": 1,
+                    "suffix": "°C"
+                }
+            ]
         },
         {
-          "type": "CheckBox",
-          "name": "EnableSetPointTemperature",
-          "caption": "Soll-Temperatur"
+            "type": "ExpansionPanel",
+            "caption": "Boost- und Party-Modus",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Dauer für den Boost-Modus an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "BoostDuration",
+                    "caption": "Boost-Modus",
+                    "suffix": "Minute(n)"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Dauer für den Party-Modus an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "PartyDuration",
+                    "caption": "Party-Modus",
+                    "suffix": "Stunde(n)"
+                }
+            ]
         },
         {
-          "type": "CheckBox",
-          "name": "EnableBoostMode",
-          "caption": "Boost-Modus"
+            "type": "ExpansionPanel",
+            "caption": "Wochenplan",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie den Wochenplan aus:"
+                },
+                {
+                    "type": "SelectEvent",
+                    "name": "WeeklySchedule",
+                    "caption": "Wochenplan",
+                    "width": "600px"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Ausführungsverzögerung in Sekunden (0 = deaktiviert) für den Wochenplan an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "ExecutionDelay",
+                    "caption": "Ausführungsverzögerung",
+                    "suffix": "Sekunden"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie aus, ob bei der Aktivierung der Automatik die Temperatur gemäß Wochenplan direkt angepasst werden soll:"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "AdjustTemperature",
+                    "caption": "Temperatur anpassen"
+                }
+            ]
         },
         {
-          "type": "CheckBox",
-          "name": "EnablePartyMode",
-          "caption": "Party-Modus"
+            "type": "ExpansionPanel",
+            "caption": "Tür- / Fensterüberwachung",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Bitte fügen Sie die Tür- und Fenstersensoren hinzu:"
+                },
+                {
+                    "type": "List",
+                    "name": "DoorWindowSensors",
+                    "caption": "Tür- / Fenstersensoren",
+                    "rowCount": 5,
+                    "add": true,
+                    "delete": true,
+                    "sort": {
+                        "column": "ID",
+                        "direction": "ascending"
+                    },
+                    "columns": [
+                        {
+                            "name": "UseSensor",
+                            "caption": "Aktiviert",
+                            "width": "100px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "ID",
+                            "caption": "Variable",
+                            "width": "auto",
+                            "add": 0,
+                            "edit": {
+                                "type": "SelectVariable"
+                            }
+                        },
+                        {
+                            "name": "Description",
+                            "caption": "Bezeichnung",
+                            "add": "",
+                            "width": "350px",
+                            "edit": {
+                                "type": "ValidationTextBox"
+                            }
+                        },
+                        {
+                            "name": "TriggerValue",
+                            "caption": "Auslösender Wert",
+                            "add": 1,
+                            "width": "160px",
+                            "edit": {
+                                "type": "Select",
+                                "options": [
+                                    {
+                                        "caption": "0 - false",
+                                        "value": 0
+                                    },
+                                    {
+                                        "caption": "1 - true",
+                                        "value": 1
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie den Zeitraum (0 = deaktiviert) für eine erneute Überprüfung an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "ReviewDelay",
+                    "caption": "Erneute Überprüfung",
+                    "suffix": "Sekunde(n)"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus die Temperatur abgesenkt werden soll:"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ReduceTemperature",
+                    "caption": "Temperatur absenken"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Absenktemperatur an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "OpenDoorWindowTemperature",
+                    "caption": "Absenktemperatur",
+                    "digits": 1,
+                    "suffix": "°C"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus erneut verwendet werden soll:"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ReactivateBoostMode",
+                    "caption": "Boost-Modus verwenden"
+                }
+            ]
         },
         {
-          "type": "CheckBox",
-          "name": "EnableThermostatTemperature",
-          "caption": "Thermostat-Temperatur"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnableRoomTemperature",
-          "caption": "Raum-Temperatur"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnableDoorWindowState",
-          "caption": "Tür- / Fensterstatus"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnableBatteryState",
-          "caption": "Batteriestatus"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnableChimneyState",
-          "caption": "Kaminstatus"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnableBoostModeTimer",
-          "caption": "Boost-Modus Timer"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnablePartyModeTimer",
-          "caption": "Party-Modus Timer"
-        },
-        {
-          "type": "CheckBox",
-          "name": "EnableDoorWindowStateTimer",
-          "caption": "Tür- / Fensterstatus Timer"
+            "type": "ExpansionPanel",
+            "caption": "Kaminüberwachung",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "Bitte wählen Sie die Variable für die Kaminüberwachung aus:"
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "ChimneyMonitoring",
+                    "caption": "Kaminüberwachung",
+                    "width": "600px"
+                },
+                {
+                    "type": "Label",
+                    "caption": " "
+                },
+                {
+                    "type": "Label",
+                    "caption": "Bitte geben Sie die Absenktemperatur an:"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "ChimneySetBackTemperature",
+                    "caption": "Absenktemperatur",
+                    "digits": 1,
+                    "suffix": "°C"
+                }
+            ]
         }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Heizkörperthermostat",
-      "items": [
+    ],
+    "actions": [
         {
-          "type": "Label",
-          "caption": "Bitte wählen Sie die Instanz des Heizkörperthermostats aus:\n\nHM-CC-RT-DN\tKanal 4\nHmIP-eTRV\t\tKanal 1\nHmIP-eTRV-2\tKanal 1"
-        },
-        {
-          "type": "SelectInstance",
-          "name": "ThermostatInstance",
-          "caption": "Heizkörperthermostat",
-          "width": "600px"
-        },
-        {
-          "type": "Select",
-          "name": "DeviceType",
-          "caption": "Gerätetyp",
-          "options": [
-            {
-              "caption": "Bitte auswählen",
-              "value": 0
-            },
-            {
-              "caption": "HM-CC-RT-DN",
-              "value": 1
-            },
-            {
-              "caption": "HmIP-eTRV",
-              "value": 2
-            },
-            {
-              "caption": "HmIP-eTRV-2",
-              "value": 3
-            }
-          ]
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie die Variable für den Steuerungsmodus aus:\n\nHM-CC-RT-DN\tKanal 4\tCONTROL_MODE\nHmIP-eTRV\t\tKanal 1\tSET_POINT_MODE\nHmIP-eTRV-2\tKanal 1\tSET_POINT_MODE"
-        },
-        {
-          "type": "SelectVariable",
-          "name": "ThermostatControlMode",
-          "caption": "Steuerungsmodus",
-          "width": "600px"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie die Variable für die Thermostat-Temperatur aus:\n\nHM-CC-RT-DN\tKanal 4\tSET_TEMPERATURE\nHmIP-eTRV\t\tKanal 1\tSET_POINT_TEMPERATURE\nHmIP-eTRV-2\tKanal 1\tSET_POINT_TEMPERATURE"
-        },
-        {
-          "type": "SelectVariable",
-          "name": "ThermostatTemperature",
-          "caption": "Thermostat-Temperatur",
-          "width": "600px"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie die Variable für die Raum-Temperatur aus:\n\nHM-CC-RT-DN\tKanal 4\tACTUAL_TEMPERATURE\nHmIP-eTRV\t\tKanal 1\tACTUAL_TEMPERATURE\nHmIP-eTRV-2\tKanal 1\tACTUAL_TEMPERATURE"
-        },
-        {
-          "type": "SelectVariable",
-          "name": "RoomTemperature",
-          "caption": "Raum-Temperatur",
-          "width": "600px"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie die Variable für den Batteriestatus aus:\n\nHM-CC-RT-DN\tKanal 0\tLOWBAT\nHmIP-eTRV\t\tKanal 0\tLOW_BAT\nHmIP-eTRV-2\tKanal 0\tLOW_BAT"
-        },
-        {
-          "type": "SelectVariable",
-          "name": "BatteryState",
-          "caption": "Batteriestatus",
-          "width": "600px"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Temperaturen",
-      "items": [
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Temperatur für den Absenkmodus an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "SetBackTemperature",
-          "caption": "Absenkmodus",
-          "digits": 1,
-          "suffix": "°C"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Temperatur für den Vorwärmmodus an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "PreHeatingTemperature",
-          "caption": "Vorwärmmodus",
-          "digits": 1,
-          "suffix": "°C"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Temperatur für den Heizmodus an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "HeatingTemperature",
-          "caption": "Heizmodus",
-          "digits": 1,
-          "suffix": "°C"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Temperatur für den Boostmodus an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "BoostTemperature",
-          "caption": "Boostmodus",
-          "digits": 1,
-          "suffix": "°C"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Boost- und Party-Modus",
-      "items": [
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Dauer für den Boost-Modus an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "BoostDuration",
-          "caption": "Boost-Modus",
-          "suffix": "Minute(n)"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Dauer für den Party-Modus an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "PartyDuration",
-          "caption": "Party-Modus",
-          "suffix": "Stunde(n)"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Wochenplan",
-      "items": [
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie den Wochenplan aus:"
-        },
-        {
-          "type": "SelectEvent",
-          "name": "WeeklySchedule",
-          "caption": "Wochenplan",
-          "width": "600px"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Ausführungsverzögerung in Sekunden (0 = deaktiviert) für den Wochenplan an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "ExecutionDelay",
-          "caption": "Ausführungsverzögerung",
-          "suffix": "Sekunden"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie aus, ob bei der Aktivierung der Automatik die Temperatur gemäß Wochenplan direkt angepasst werden soll:"
-        },
-        {
-          "type": "CheckBox",
-          "name": "AdjustTemperature",
-          "caption": "Temperatur anpassen"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Tür- / Fensterüberwachung",
-      "items": [
-        {
-          "type": "Label",
-          "caption": "Bitte fügen Sie die Tür- und Fenstersensoren hinzu:"
-        },
-        {
-          "type": "List",
-          "name": "DoorWindowSensors",
-          "caption": "Tür- / Fenstersensoren",
-          "rowCount": 5,
-          "add": true,
-          "delete": true,
-          "sort": {
-            "column": "ID",
-            "direction": "ascending"
-          },
-          "columns": [
-            {
-              "name": "UseSensor",
-              "caption": "Aktiviert",
-              "width": "100px",
-              "add": true,
-              "edit": {
-                "type": "CheckBox"
-              }
-            },
-            {
-              "name": "ID",
-              "caption": "Variable",
-              "width": "auto",
-              "add": 0,
-              "edit": {
-                "type": "SelectVariable"
-              }
-            },
-            {
-              "name": "Description",
-              "caption": "Bezeichnung",
-              "add": "",
-              "width": "350px",
-              "edit": {
-                "type": "ValidationTextBox"
-              }
-            },
-            {
-              "name": "TriggerValue",
-              "caption": "Auslösender Wert",
-              "add": 1,
-              "width": "160px",
-              "edit": {
-                "type": "Select",
-                "options": [
-                  {
-                    "caption": "0 - false",
-                    "value": 0
-                  },
-                  {
-                    "caption": "1 - true",
-                    "value": 1
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie den Zeitraum (0 = deaktiviert) für eine erneute Überprüfung an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "ReviewDelay",
-          "caption": "Erneute Überprüfung",
-          "suffix": "Sekunde(n)"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie aus, ob bei geöffnetem Tür- / Fensterstatus die Temperatur abgesenkt werden soll:"
-        },
-        {
-          "type": "CheckBox",
-          "name": "ReduceTemperature",
-          "caption": "Temperatur absenken"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Absenktemperatur an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "OpenDoorWindowTemperature",
-          "caption": "Absenktemperatur",
-          "digits": 1,
-          "suffix": "°C"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie aus, ob bei wieder geschlossenem Tür- / Fensterstatus der Boost-Modus erneut verwendet werden soll:"
-        },
-        {
-          "type": "CheckBox",
-          "name": "ReactivateBoostMode",
-          "caption": "Boost-Modus verwenden"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Kaminüberwachung",
-      "items": [
-        {
-          "type": "Label",
-          "caption": "Bitte wählen Sie die Variable für die Kaminüberwachung aus:"
-        },
-        {
-          "type": "SelectVariable",
-          "name": "ChimneyMonitoring",
-          "caption": "Kaminüberwachung",
-          "width": "600px"
-        },
-        {
-          "type": "Label",
-          "caption": " "
-        },
-        {
-          "type": "Label",
-          "caption": "Bitte geben Sie die Absenktemperatur an:"
-        },
-        {
-          "type": "NumberSpinner",
-          "name": "ChimneySetBackTemperature",
-          "caption": "Absenktemperatur",
-          "digits": 1,
-          "suffix": "°C"
-        }
-      ]
-    }
-  ],
-  "actions": [
-    {
-      "type": "ExpansionPanel",
-      "caption": "Konfiguration",
-      "items": [
-        {
-          "type": "Button",
-          "caption": "Neu einlesen",
-          "onClick": "UBHKTS_ReloadConfiguration($id);"
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {
-              "type": "SelectCategory",
-              "name": "BackupCategory",
-              "caption": "Kategorie",
-              "width": "600px"
-            },
-            {
-              "type": "Label",
-              "caption": " "
-            },
-            {
-              "type": "Button",
-              "caption": "Sichern",
-              "onClick": "UBHKTS_CreateBackup($id, $BackupCategory);"
-            }
-          ]
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {
-              "type": "SelectScript",
-              "name": "ConfigurationScript",
-              "caption": "Konfigurationsskript",
-              "width": "600px"
-            },
-            {
-              "type": "Label",
-              "caption": " "
-            },
-            {
-              "type": "PopupButton",
-              "caption": "Wiederherstellen",
-              "popup": {
-                "caption": "Konfiguration wirklich wiederherstellen?",
-                "items": [
-                  {
+            "type": "ExpansionPanel",
+            "caption": "Konfiguration",
+            "items": [
+                {
                     "type": "Button",
-                    "caption": "Wiederherstellen",
-                    "onClick": "UBHKTS_RestoreConfiguration($id, $ConfigurationScript);"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Heizkörperthermostat",
-      "items": [
+                    "caption": "Neu einlesen",
+                    "onClick": "UBHKTS_ReloadConfig($id);"
+                },
+                {
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "SelectCategory",
+                            "name": "BackupCategory",
+                            "caption": "Kategorie",
+                            "width": "600px"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": " "
+                        },
+                        {
+                            "type": "Button",
+                            "caption": "Sichern",
+                            "onClick": "UBHKTS_CreateBackup($id, $BackupCategory);"
+                        }
+                    ]
+                },
+                {
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "SelectScript",
+                            "name": "ConfigurationScript",
+                            "caption": "Konfigurationsskript",
+                            "width": "600px"
+                        },
+                        {
+                            "type": "Label",
+                            "caption": " "
+                        },
+                        {
+                            "type": "PopupButton",
+                            "caption": "Wiederherstellen",
+                            "popup": {
+                                "caption": "Konfiguration wirklich wiederherstellen?",
+                                "items": [
+                                    {
+                                        "type": "Button",
+                                        "caption": "Wiederherstellen",
+                                        "onClick": "UBHKTS_RestoreConfiguration($id, $ConfigurationScript);"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "type": "Button",
-          "caption": "Variablen automatisch ermitteln",
-          "onClick": "UBHKTS_DetermineThermostatVariables($id);"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Wochenplan",
-      "items": [
+            "type": "ExpansionPanel",
+            "caption": "Heizkörperthermostat",
+            "items": [
+                {
+                    "type": "Button",
+                    "caption": "Variablen automatisch ermitteln",
+                    "onClick": "UBHKTS_DetermineThermostatVariables($id);"
+                }
+            ]
+        },
         {
-          "type": "Button",
-          "caption": "Aktuelle Aktion anzeigen",
-          "onClick": "UBHKTS_ShowActualAction($id);"
-        }
-      ]
-    },
-    {
-      "type": "ExpansionPanel",
-      "caption": "Testbereich",
-      "items": [
+            "type": "ExpansionPanel",
+            "caption": "Wochenplan",
+            "items": [
+                {
+                    "type": "Button",
+                    "caption": "Aktuelle Aktion anzeigen",
+                    "onClick": "UBHKTS_ShowActualAction($id);"
+                }
+            ]
+        },
         {
-          "type": "TestCenter"
+            "type": "ExpansionPanel",
+            "caption": "Testbereich",
+            "items": [
+                {
+                    "type": "TestCenter"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
