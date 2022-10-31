@@ -335,6 +335,11 @@ class Heizkoerperthermostatsteuerung extends IPSModule
                 $this->RegisterReference($id);
                 $this->RegisterMessage($id, VM_UPDATE);
             }
+            //Command control
+            $id = $this->ReadPropertyInteger('CommandControl');
+            if ($id != 0 && IPS_ObjectExists($id)) {
+                $this->RegisterReference($id);
+            }
         }
 
         ########## Links
