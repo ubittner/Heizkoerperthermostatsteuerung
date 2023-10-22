@@ -1,0 +1,22 @@
+name: Check Style
+
+on: [push, pull_request]
+
+jobs:
+
+  style:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout module
+      uses: actions/checkout@master
+    - run: git submodule update --init -- .style
+      shell: bash
+    - run: wget https://cs.symfony.com/download/php-cs-fixer-v2.phar
+      shell: bash
+    - run: PHP_CS_FIXER_IGNORE_ENV=1  php php-cs-fixer-v2.phar fix --config=.style/.php_cs -v --dry-run --allow-risky=yes .
+      shell: bash
+    - run: |
+            if [[ -f ".style/json-check.php" ]]; then
+              php .style/json-check.php fix .
+              fi
+        shell: bash
