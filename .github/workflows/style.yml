@@ -19,4 +19,4 @@ jobs:
             if [[ -f ".style/json-check.php" ]]; then
               php .style/json-check.php fix .
               fi
-        shell: bash
+      shell: bash
